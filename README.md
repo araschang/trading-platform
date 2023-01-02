@@ -1,3 +1,3 @@
-# binance_trading_bot
+# trading-platform-backend
 Project ongoing<br>
-Progress: Testing on Google Cloud Platform
+Progress: Developing backend

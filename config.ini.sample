@@ -1,0 +1,17 @@
+[Binance]
+api_key = 
+api_secret = 
+
+[Bybit]
+api_key = 
+api_secret = 
+
+[Bitget]
+api_key = 
+api_secret = 
+pass_phrase = 
+
+[OKX]
+api_key = 
+api_secret = 
+pass_phrase = 

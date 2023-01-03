@@ -7,6 +7,7 @@ class Connector(object):
         self.config = Config()
 
 
+class RedisConnector(Connector):
     def __init__(self):
         super().__init__()
         config = self.config['Redis']

@@ -8,3 +8,6 @@ config.ini
 .ipynb_checkpoints/
 Routes/__pycache__/
 __pycache__/
+dump.rdb
+rqtest.py
+test.py

@@ -3,7 +3,8 @@ from rq import Queue
 from Base.Connector import RedisConnector
 from Base.ResponseCode import ResponseCode
 
-class BacktestController(Resource):
+
+class MembershipController(Resource):
     def get(self, exchange, symbol, timeframe):
         pass
     

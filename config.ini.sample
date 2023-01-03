@@ -18,3 +18,7 @@ pass_phrase =
 
 [Redis]
 host = 
+
+[MongoDB]
+Account =
+Password =

@@ -14,7 +14,7 @@ api.add_resource(
     )
 
 api.add_resource(
-    TradeController, 
+    TradeController,
     '/trade/<string:exchange>/<string:symbol>/<string:timeframe>',
     )
 

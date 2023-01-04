@@ -5,18 +5,17 @@ from Routes.BacktestController import BacktestController
 from Routes.TradeController import TradeController
 from Routes.MembershipController import MembershipController, MemberLoginController
 
-
 app = Flask(__name__)
 api = Api(app)
 
 api.add_resource(
     BacktestController,
-    '/backtest/<string:exchange>/<string:symbol>/<string:timeframe>',
+    '/backtest',
     )
 
 api.add_resource(
     TradeController,
-    '/trade/<string:exchange>/<string:symbol>/<string:timeframe>',
+    '/trade',
     )
 
 api.add_resource(

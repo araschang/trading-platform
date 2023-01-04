@@ -1,6 +1,6 @@
-from Base.ConfigReader import Config
 from redis import Redis, ConnectionPool
 from pymongo import MongoClient
+from Base.ConfigReader import Config
 
 class Connector(object):
     def __init__(self):

@@ -1,7 +1,7 @@
+from flask import request
 from flask_restful import Resource
 from Base.Connector import MongoConnector
 from Base.ResponseCode import ResponseCode
-from flask import request
 
 
 class MembershipController(Resource):

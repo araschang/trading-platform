@@ -36,6 +36,19 @@ class Backtest(Connector):
         self.start = datetime.timestamp(datetime.now() - timedelta(days=365))
         self.end = datetime.timestamp(datetime.now())
     
+    def Backtest(self, exchange, symbol, timeframe, strategy, start, end):
+        self.exchange = exchange
+        self.symbol = symbol
+        self.timeframe = timeframe
+        self.start = start
+        self.end = end
+        self.strategy = strategy
+        self.df = self.get_ohlcv()
+        self.df = self.add_strategy(self.df, self.strategy)
+        self.df = self.run(self.df, self.strategy)
+        self.result, self.df = self.get_results(self.df)
+        return self.result, self.df
+    
     def get_ohlcv(self):
         '''Get a year OHLCV data from the exchange'''
         ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, self.start, self.end)

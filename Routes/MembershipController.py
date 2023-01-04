@@ -57,3 +57,24 @@ class MembershipController(Resource):
         }
         self._membershipConnection.update_one({'email': email}, {'$set': member})
         return ResponseCode.SUCCESS
+
+
+class MemberLoginController(Resource):
+    def __init__(self):
+        self._membershipConnection = MongoConnector().getMembershipConn()
+
+    def post(self):
+        '''
+        Login check.
+        Data json: account, password
+        '''
+        data = request.get_json()
+        account = data['account']
+        password = data['password']
+        member = self._membershipConnection.find_one({'account': account})
+        if not member:
+            return ResponseCode.MEMBER_NOT_EXIST
+        if member['password'] != password:
+            return ResponseCode.MEMBER_PASSWORD_ERROR
+        else:
+            return ResponseCode.SUCCESS

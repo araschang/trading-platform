@@ -3,7 +3,7 @@ from flask import Flask
 from Module.Indicators import *
 from Routes.BacktestController import BacktestController
 from Routes.TradeController import TradeController
-from Routes.MembershipController import MembershipController
+from Routes.MembershipController import MembershipController, MemberLoginController
 
 
 app = Flask(__name__)
@@ -22,6 +22,11 @@ api.add_resource(
 api.add_resource(
     MembershipController,
     '/membership',
+)
+
+api.add_resource(
+    MemberLoginController,
+    '/login',
 )
 
 if __name__ == '__main__':

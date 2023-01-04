@@ -29,7 +29,7 @@ class MongoConnector(Connector):
         self._mongoConnection = MongoClient(mongoUrl)
 
     def getMembershipConn(self):
-        return self._mongoConnection.get_database('Membership')
+        return self._mongoConnection['Membership']['Information']
     
     def getTradeConn(self):
-        return self._mongoConnection.get_database('Trade')
+        return self._mongoConnection['Trade']['Transactions']

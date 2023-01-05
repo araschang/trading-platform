@@ -1,9 +1,15 @@
+'''
+# Test
+import sys
+sys.path.append('./')
+'''
 import pandas as pd
 import numpy as np
 import ccxt
 from datetime import datetime, timedelta
 from Module.Indicators import *
 from Base.ConfigReader import Config
+from Base.JsonParser import JsonParser
 
 class Connector(object):
     def __init__(self):
@@ -36,17 +42,14 @@ class Backtest(Connector):
         self.start = datetime.timestamp(datetime.now() - timedelta(days=365))
         self.end = datetime.timestamp(datetime.now())
     
-    def Backtest(self, exchange, symbol, timeframe, strategy, start, end):
-        self.exchange = exchange
+    def Backtest(self, symbol, timeframe, strategy):
         self.symbol = symbol
         self.timeframe = timeframe
-        self.start = start
-        self.end = end
         self.strategy = strategy
         self.df = self.get_ohlcv()
         self.df = self.add_strategy(self.df, self.strategy)
         self.df = self.run(self.df, self.strategy)
-        self.result, self.df = self.get_results(self.df)
+        self.result, self.df = self.get_results(self.df, self.timeframe)
         return self.result, self.df
     
     def get_ohlcv(self):
@@ -59,20 +62,24 @@ class Backtest(Connector):
         df['time'] = pd.to_datetime(df['time'], unit='ms')
         return df
     
-    def add_strategy(self, df, strategies: list, atr_period=14, fast=12, slow=26, signal=9, ema_short_len=20, ema_long_len=50):
+    def add_strategy(self, df, strategies):
         '''
         Add indicators to the OHLCV dataframe
         Avalible strategies: ATR, MACD, EMA
         '''
-        for strategy in strategies:
-            if strategy == 'ATR':
-                df['ATR'] = ATR(df, atr_period=atr_period)
-            elif strategy == 'MACD':
-                df['MACD'], df['MACD_signal'] = MACD(df, fast=fast, slow=slow, signal=signal)
-            elif strategy == 'EMA':
-                df['EMA_short'] = EMA(df, ema_short_len=ema_short_len)
-                df['EMA_long'] = EMA(df, ema_long_len=ema_long_len)
+        check_strategies = JsonParser.parse_strategies(strategies)
+        for strategy in check_strategies:
+            if 'ATR' == strategy[0]:
+                df['ATR'] = ATR(df, strategy[1])
+            elif 'MACD' == strategy[0]:
+                temp = MACD(df, strategy[1], strategy[2], strategy[3])
+                df['MACD'] = temp['MACD']
+                df['MACD_signal'] = temp['signal']
+            elif 'EMA' == strategy[0]:
+                df['EMA_short'] = EMA(df, strategy[1])
+                df['EMA_long'] = EMA(df, strategy[2])
         df.dropna(inplace=True)
+        df.reset_index(drop=True, inplace=True)
         return df
     
     def macd_signal(self, df, which_day: int):
@@ -86,9 +93,9 @@ class Backtest(Connector):
     
     def atr_signal(self, df, which_day: int):
         '''Generate ATR signal'''
-        if df.iloc[which_day]['close'] > df.iloc[which_day]['ATR'] and df.iloc[which_day-1]['close'] < df.iloc[which_day-1]['ATR']:
+        if df.iloc[which_day]['ATR'] > df.iloc[which_day-1]['ATR']:
             return 'buy'
-        elif df.iloc[which_day]['close'] < df.iloc[which_day]['ATR'] and df.iloc[which_day-1]['close'] > df.iloc[which_day-1]['ATR']:
+        elif df.iloc[which_day]['ATR'] < df.iloc[which_day-1]['ATR']:
             return 'sell'
         else:
             return ''
@@ -120,34 +127,55 @@ class Backtest(Connector):
         else:
             return ''
     
-    def run(self, df, indicators: list):
+    def run(self, df, strategies):
         '''Run the backtest'''
+        strategiy_list = JsonParser.parse_strategies(strategies)
+        indicators = []
+        for strategy in strategiy_list:
+            indicators.append(strategy[0])
+        df['signal'] = ''
         signal = ''
         for i in range(1, len(df)):
             trade_signal = self.check_trade(df, i, indicators)
             if signal == '' and trade_signal == 'buy':
                 signal = 'buy'
                 df.loc[i, 'signal'] = 'buy'
-                df.loc[i, 'entry_price'] = df.loc[i, 'close']
+                entry_price = df.loc[i, 'close']
             elif signal == '' and trade_signal == 'sell':
                 signal = 'sell'
                 df.loc[i, 'signal'] = 'sell'
-                df.loc[i, 'entry_price'] = df.loc[i, 'close']
+                entry_price = df.loc[i, 'close']
             elif signal == 'buy' and trade_signal == 'sell':
                 signal = ''
                 df.loc[i, 'signal'] = 'sell'
-                df.loc[i, 'exit_price'] = df.loc[i, 'close']
-                df.loc[i, 'pnl'] = (df.loc[i, 'exit_price'] - df.loc[i, 'entry_price']) / df.loc[i, 'entry_price']
+                exit_price = df.loc[i, 'close']
+                df.loc[i, 'pnl'] = (exit_price - entry_price) / entry_price
             elif signal == 'sell' and trade_signal == 'buy':
                 signal = ''
                 df.loc[i, 'signal'] = 'buy'
-                df.loc[i, 'exit_price'] = df.loc[i, 'close']
-                df.loc[i, 'pnl'] = (df.loc[i, 'entry_price'] - df.loc[i, 'exit_price']) / df.loc[i, 'entry_price']
+                exit_price = df.loc[i, 'close']
+                df.loc[i, 'pnl'] = (entry_price - exit_price) / entry_price
             else:
                 df.loc[i, 'signal'] = signal
+        df.to_csv('backtest.csv')
         return df
     
-    def get_results(self, df):
+    def convert_timeframe_to_year(self, df, timeframe: str):
+        '''Convert the timeframe to year'''
+        if timeframe == '1d':
+            return len(df) / 365
+        elif timeframe == '1h':
+            return len(df) / 365 / 24
+        elif timeframe == '30m':
+            return len(df) / 365 / 24 / 2
+        elif timeframe == '15m':
+            return len(df) / 365 / 24 / 4
+        elif timeframe == '5m':
+            return len(df) / 365 / 24 / 12
+        elif timeframe == '1m':
+            return len(df) / 365 / 24 / 60
+    
+    def get_results(self, df, timeframe: str):
         '''
         Get the results of the backtest. A dict and a dataframe
         Return:
@@ -164,11 +192,12 @@ class Backtest(Connector):
         df['cum_pnl'] = df['cum_pnl'] - 1
         df['cum_pnl'] = df['cum_pnl'] * 100
         df['cum_pnl'] = df['cum_pnl'].round(2)
-        cagr = (df['cum_pnl'].iloc[-1] / 100) ** (365 / len(df)) - 1
+        cagr = np.sign(df['cum_pnl'].iloc[-1] / 100) * np.power(np.abs(df['cum_pnl'].iloc[-1] / 100), 1 / self.convert_timeframe_to_year(df, timeframe)) - 1
         cagr = cagr * 100
         cagr = cagr.round(2)
         df['max_drawdown'] = df['cum_pnl'].cummax() - df['cum_pnl']
         df['max_drawdown'] = df['max_drawdown'].fillna(0)
+        pnl = round(df['pnl'].sum(), 2)
         max_drawdown = df['max_drawdown'].max()
         max_drawdown = max_drawdown.round(2)
         volatility = df['pnl'].std()
@@ -177,13 +206,18 @@ class Backtest(Connector):
         volatility = volatility.round(2)
         sharpe_ratio = cagr / volatility
         sharpe_ratio = sharpe_ratio.round(2)
-        winrate = len(df[df['pnl'] > 0]) / len(df[df['pnl'] != 0])
+        winrate = round(len(df[df['pnl'] > 0]) / len(df[df['pnl'] != 0]), 2)
         results = {
             'cagr': cagr,
+            'pnl': pnl,
             'max_drawdown': max_drawdown,
             'volatility': volatility,
             'sharpe_ratio': sharpe_ratio,
             'winrate': winrate,
         }
         return results, df
-    
+
+if __name__ == '__main__':
+    backtest = Backtest('Binance', 'BTC/USDT', '1h')
+    df = backtest.get_ohlcv()
+    print(df)

@@ -17,26 +17,17 @@ class Connector(object):
 
 
 class Backtest(Connector):
-    def __init__(self, exchange, symbol, timeframe):
+    def __init__(self, symbol, timeframe):
         super().__init__()
-        if exchange == 'Binance':
-            config = self.config['Binance']
-            self.exchange = binance = ccxt.binanceusdm({
-                'apiKey': config['api_key'],
-                'secret': config['api_secret'],
-                'enableRateLimit': True,
-                'option': {
-                    'defaultMarket': 'future',
-                },
-            })
-        elif exchange == 'OKX':
-            config = self.config['OKX']
-            self.exchange = ccxt.okx({
-                'apiKey': config['api_key'],
-                'secret': config['api_secret'],
-                'password': config['pass_phrase'],
-            })
-        ### Add more exchanges here
+        config = self.config['Binance']
+        self.exchange = binance = ccxt.binanceusdm({
+            'apiKey': config['api_key'],
+            'secret': config['api_secret'],
+            'enableRateLimit': True,
+            'option': {
+                'defaultMarket': 'future',
+            },
+        })
         self.symbol = symbol
         self.timeframe = timeframe
         self.start = datetime.timestamp(datetime.now() - timedelta(days=365))
@@ -54,9 +45,6 @@ class Backtest(Connector):
     
     def get_ohlcv(self):
         '''Get a year OHLCV data from the exchange'''
-        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, self.start, self.end)
-        df = pd.DataFrame(ohlcv, columns=['timestamp', 'open', 'high', 'low', 'close', 'volume'])
-        df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
         ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, self.start, self.end)
         df = pd.DataFrame(ohlcv, columns=['time', 'open', 'high', 'low', 'close', 'volume'])
         df['time'] = pd.to_datetime(df['time'], unit='ms')

@@ -1,7 +1,6 @@
 from flask_restful import Api
 from flask import Flask
-from Module.Indicators import *
-from Routes.BacktestController import BacktestController, BacktestTester
+from Routes.BacktestController import BacktestController
 from Routes.TradeController import TradeController
 from Routes.MembershipController import MembershipController, MemberLoginController
 

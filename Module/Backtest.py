@@ -20,7 +20,7 @@ class Backtest(Connector):
     def __init__(self, symbol, timeframe):
         super().__init__()
         config = self.config['Binance']
-        self.exchange = binance = ccxt.binanceusdm({
+        self.exchange = ccxt.binanceusdm({
             'apiKey': config['api_key'],
             'secret': config['api_secret'],
             'enableRateLimit': True,

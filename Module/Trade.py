@@ -3,7 +3,6 @@ import pandas as pd
 from datetime import datetime, timedelta
 from Base.ConfigReader import Config
 from Base.JsonParser import JsonParser
-from Module.Backtest import Backtest
 from Module.Indicators import *
 
 class Connector(object):
@@ -36,11 +35,10 @@ class Trade(Connector):
         self.start = datetime.timestamp(datetime.now() - timedelta(days=365))
         self.end = datetime.timestamp(datetime.now())
     
-    def Trade(self, symbol, timeframe, strategy, amount):
+    def Trade(self, symbol, timeframe, strategy):
         self.symbol = symbol
         self.timeframe = timeframe
         self.strategy = strategy
-        self.amount = amount
         self.df = self.get_ohlcv(self.start, self.end)
         self.df = self.add_strategy(self.df, self.strategy)
         self.signal = self.check_trade(self.df, self.strategy)

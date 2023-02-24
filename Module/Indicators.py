@@ -11,6 +11,15 @@ def ATR(DF, period=14):
     df['ATR'] = df['TR'].ewm(span=period, min_periods=period).mean()
     return df['ATR']
 
+def KD(DF, period=14):
+    df = DF.copy()
+    df['low_min'] = df['low'].rolling(period).min()
+    df['high_max'] = df['high'].rolling(period).max()
+    df['RSV'] = 100 * (df['close'] - df['low_min']) / (df['high_max'] - df['low_min'])
+    df['K'] = df['RSV'] * 1/3 + df['RSV'].shift(1) * 2/3
+    df['D'] = df['K'] * 1/3 + df['K'].shift(1) * 2/3
+    return df.loc[:, ['K', 'D']]
+
 def MACD(DF, fast=12, slow=26, signal=9):
     df = DF.copy()
     df['ma_fast'] = df['close'].ewm(span=fast, min_periods=fast).mean()

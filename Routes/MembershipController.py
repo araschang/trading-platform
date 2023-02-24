@@ -16,24 +16,22 @@ class MembershipController(Resource):
         data = request.get_json()
         email = data['email']
         member = self._membershipConnection.find_one({'email': email})
-        return member , ResponseCode.SUCCESS if member else ResponseCode.MEMBER_NOT_EXIST
+        return member, ResponseCode.SUCCESS if member else ResponseCode.MEMBER_NOT_EXIST
     
     def post(self):
         '''
         Sign up for a membership.
-        Data json: account, password, email
+        Data json: email, password
         '''
         data = request.get_json()
-        account = data['account']
-        password = data['password']
         email = data['email']
+        password = data['password']
         if self._membershipConnection.find_one({'email': email}):
             return ResponseCode.MEMBER_ALREADY_EXIST
         
         member = {
-            'account': account,
-            'password': password,
             'email': email,
+            'password': password,
         }
         self._membershipConnection.insert_one(member)
         return ResponseCode.SUCCESS if self._membershipConnection.find_one({'email': email}) else ResponseCode.BAD_REQUEST
@@ -41,19 +39,17 @@ class MembershipController(Resource):
     def put(self):
         '''
         Update a membership.
-        Data json: account, password, email
+        Data json: email, password
         '''
         data = request.get_json()
-        account = data['account']
-        password = data['password']
         email = data['email']
+        password = data['password']
         if not self._membershipConnection.find_one({'email': email}):
             return ResponseCode.MEMBER_NOT_EXIST
         
         member = {
-            'account': account,
-            'password': password,
             'email': email,
+            'password': password,
         }
         self._membershipConnection.update_one({'email': email}, {'$set': member})
         return ResponseCode.SUCCESS
@@ -66,12 +62,12 @@ class MemberLoginController(Resource):
     def post(self):
         '''
         Login check.
-        Data json: account, password
+        Data json: email, password
         '''
         data = request.get_json()
-        account = data['account']
+        email = data['email']
         password = data['password']
-        member = self._membershipConnection.find_one({'account': account})
+        member = self._membershipConnection.find_one({'email': email})
         if not member:
             return ResponseCode.MEMBER_NOT_EXIST
         if member['password'] != password:

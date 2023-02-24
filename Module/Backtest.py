@@ -1,8 +1,3 @@
-'''
-# Test
-import sys
-sys.path.append('./')
-'''
 import pandas as pd
 import numpy as np
 import ccxt
@@ -17,7 +12,7 @@ class Connector(object):
 
 
 class Backtest(Connector):
-    def __init__(self, symbol, timeframe):
+    def __init__(self, symbol, timeframe, backtest_range):
         super().__init__()
         config = self.config['Binance']
         self.exchange = ccxt.binanceusdm({
@@ -30,8 +25,13 @@ class Backtest(Connector):
         })
         self.symbol = symbol
         self.timeframe = timeframe
-        self.start = datetime.timestamp(datetime.now() - timedelta(days=365))
-        self.end = datetime.timestamp(datetime.now())
+        self.backtest_range = backtest_range
+        if self.backtest_range == '1mon':
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=30))) * 1000
+        elif self.backtest_range == '3mon':
+            self.start = datetime.timestamp(datetime.now() - timedelta(days=90)) * 1000
+        elif self.backtest_range == '6mon':
+            self.start = datetime.timestamp(datetime.now() - timedelta(days=180)) * 1000
     
     def Backtest(self, symbol, timeframe, strategy):
         self.symbol = symbol
@@ -42,34 +42,36 @@ class Backtest(Connector):
         self.df = self.run(self.df, self.strategy)
         self.result, self.df = self.get_results(self.df, self.timeframe)
         return self.result, self.df
-    
+
     def get_ohlcv(self):
         '''Get a year OHLCV data from the exchange'''
-        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, self.start, self.end)
+        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, since=self.start)
         df = pd.DataFrame(ohlcv, columns=['time', 'open', 'high', 'low', 'close', 'volume'])
         df['time'] = pd.to_datetime(df['time'], unit='ms')
         return df
-    
+
     def add_strategy(self, df, strategies):
         '''
         Add indicators to the OHLCV dataframe
-        Avalible strategies: ATR, MACD, EMA
+        Avalible strategies: MACD, EMA, KD
         '''
         check_strategies = JsonParser.parse_strategies(strategies)
         for strategy in check_strategies:
-            if 'ATR' == strategy[0]:
-                df['ATR'] = ATR(df, strategy[1])
+            if 'KD' == strategy[0]:
+                temp = KD(df, strategy[1])
+                df['K'] = temp['K']
+                df['D'] = temp['D']
             elif 'MACD' == strategy[0]:
                 temp = MACD(df, strategy[1], strategy[2], strategy[3])
                 df['MACD'] = temp['MACD']
                 df['MACD_signal'] = temp['signal']
             elif 'EMA' == strategy[0]:
                 df['EMA_short'] = EMA(df, strategy[1])
-                df['EMA_long'] = EMA(df, strategy[2])
+                df['EMA_long'] = EMA(df, strategy[2])   
         df.dropna(inplace=True)
         df.reset_index(drop=True, inplace=True)
         return df
-    
+
     def macd_signal(self, df, which_day: int):
         '''Generate MACD signal'''
         if df.iloc[which_day]['MACD'] > df.iloc[which_day]['MACD_signal'] and df.iloc[which_day-1]['MACD'] < df.iloc[which_day-1]['MACD_signal']:
@@ -78,16 +80,16 @@ class Backtest(Connector):
             return 'sell'
         else:
             return ''
-    
-    def atr_signal(self, df, which_day: int):
+
+    def kd_signal(self, df, which_day: int):
         '''Generate ATR signal'''
-        if df.iloc[which_day]['ATR'] > df.iloc[which_day-1]['ATR']:
+        if df.iloc[which_day]['K'] > df.iloc[which_day]['D'] and df.iloc[which_day-1]['K'] < df.iloc[which_day-1]['D']:
             return 'buy'
-        elif df.iloc[which_day]['ATR'] < df.iloc[which_day-1]['ATR']:
+        elif df.iloc[which_day]['K'] < df.iloc[which_day]['D'] and df.iloc[which_day-1]['K'] > df.iloc[which_day-1]['D']:
             return 'sell'
         else:
             return ''
-    
+
     def ema_signal(self, df, which_day: int):
         '''Generate EMA signal'''
         if df.iloc[which_day]['EMA_short'] > df.iloc[which_day]['EMA_long'] and df.iloc[which_day-1]['EMA_short'] < df.iloc[which_day-1]['EMA_long']:
@@ -101,8 +103,8 @@ class Backtest(Connector):
         '''Check if there is a trade signal'''
         signal_list = []
         for indicator in indicators:
-            if indicator == 'ATR':
-                signal = self.atr_signal(df, which_day)
+            if indicator == 'KD':
+                signal = self.kd_signal(df, which_day)
             elif indicator == 'MACD':
                 signal = self.macd_signal(df, which_day)
             elif indicator == 'EMA':
@@ -114,13 +116,14 @@ class Backtest(Connector):
             return 'sell'
         else:
             return ''
-    
+
     def run(self, df, strategies):
         '''Run the backtest'''
         strategiy_list = JsonParser.parse_strategies(strategies)
         indicators = []
         for strategy in strategiy_list:
             indicators.append(strategy[0])
+        df['pnl'] = 0
         df['signal'] = ''
         signal = ''
         for i in range(1, len(df)):
@@ -145,9 +148,8 @@ class Backtest(Connector):
                 df.loc[i, 'pnl'] = (entry_price - exit_price) / entry_price
             else:
                 df.loc[i, 'signal'] = signal
-        df.to_csv('backtest.csv')
         return df
-    
+
     def convert_timeframe_to_year(self, df, timeframe: str):
         '''Convert the timeframe to year'''
         if timeframe == '1d':
@@ -162,7 +164,7 @@ class Backtest(Connector):
             return len(df) / 365 / 24 / 12
         elif timeframe == '1m':
             return len(df) / 365 / 24 / 60
-    
+
     def get_results(self, df, timeframe: str):
         '''
         Get the results of the backtest. A dict and a dataframe
@@ -186,24 +188,22 @@ class Backtest(Connector):
         df['max_drawdown'] = df['cum_pnl'].cummax() - df['cum_pnl']
         df['max_drawdown'] = df['max_drawdown'].fillna(0)
         pnl = round(df['pnl'].sum(), 2)
-        max_drawdown = df['max_drawdown'].max()
-        max_drawdown = max_drawdown.round(2)
+        max_drawdown = float(df['max_drawdown'].max())
+        max_drawdown = round(max_drawdown, 2)
         volatility = df['pnl'].std()
         volatility = volatility * np.sqrt(365)
         volatility = volatility * 100
         volatility = volatility.round(2)
         sharpe_ratio = cagr / volatility
         sharpe_ratio = sharpe_ratio.round(2)
-        winrate = round(len(df[df['pnl'] > 0]) / len(df[df['pnl'] != 0]), 2)
         results = {
-            'cagr': cagr,
-            'pnl': pnl,
-            'max_drawdown': max_drawdown,
-            'volatility': volatility,
-            'sharpe_ratio': sharpe_ratio,
-            'winrate': winrate,
+            "cagr": cagr,
+            "pnl": pnl,
+            "max_drawdown": max_drawdown,
+            "volatility": volatility,
+            "sharpe_ratio": sharpe_ratio
         }
-        return results, df
+        return '['+str(results)+']', df
 
 if __name__ == '__main__':
     backtest = Backtest('Binance', 'BTC/USDT', '1h')

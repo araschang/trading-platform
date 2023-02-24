@@ -31,5 +31,11 @@ class MongoConnector(Connector):
     def getMembershipConn(self):
         return self._mongoConnection['Membership']['Information']
     
-    def getTradeConn(self):
+    def getBacktestResultConn(self):
+        return self._mongoConnection['Backtest']['Results']
+    
+    def getTradeTransactionConn(self):
         return self._mongoConnection['Trade']['Transactions']
+    
+    def getTradeMemberConn(self):
+        return self._mongoConnection['Trade']['Members']

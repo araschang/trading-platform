@@ -1,4 +1,0 @@
-1. 登入模組 (json: account password email)
-2. 註冊模組
-3. 按下回測按鈕打api 傳json 後端會回傳一個df
-4. 如果按下執行交易 打api 傳json 進資料庫

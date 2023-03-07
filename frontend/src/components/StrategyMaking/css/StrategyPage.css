@@ -1,0 +1,24 @@
+.next_button {
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    width: 130px;
+    height: 55px;
+    filter: drop-shadow(0px 10px 13px rgba(17, 38, 146, 0.05));
+    border: 1px solid #677BF6;
+    border-radius: 32px;
+    background-color: #677BF6;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 175%;
+    color: white;
+    margin-bottom: 40px;
+    margin-top: 60px;
+}
+.next_button:hover {
+    background-color: white;
+    color: #677BF6;
+}

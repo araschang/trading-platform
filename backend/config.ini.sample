@@ -1,0 +1,22 @@
+[Binance]
+api_key = 
+api_secret = 
+
+[OKX]
+api_key = 
+api_secret = 
+pass_phrase = 
+
+[Redis]
+host = 
+
+[MongoDB]
+Account =
+Password =
+
+[Twitter]
+api_key = 
+api_key_secret = 
+access_token = 
+access_token_secret = 
+bearer_token =

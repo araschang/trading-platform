@@ -1,3 +1,5 @@
+import sys
+sys.path.append('./backend')
 import pandas as pd
 import numpy as np
 import ccxt
@@ -12,7 +14,7 @@ class Connector(object):
 
 
 class Backtest(Connector):
-    def __init__(self, symbol, timeframe, backtest_range):
+    def __init__(self, symbol, timeframe, backtest_range, strategy):
         super().__init__()
         config = self.config['Binance']
         self.exchange = ccxt.binanceusdm({
@@ -26,6 +28,7 @@ class Backtest(Connector):
         self.symbol = symbol
         self.timeframe = timeframe
         self.backtest_range = backtest_range
+        self.strategy = strategy
         if self.backtest_range == '1mon':
             self.start = int(datetime.timestamp(datetime.now() - timedelta(days=30))) * 1000
         elif self.backtest_range == '3mon':
@@ -33,14 +36,11 @@ class Backtest(Connector):
         elif self.backtest_range == '6mon':
             self.start = datetime.timestamp(datetime.now() - timedelta(days=180)) * 1000
     
-    def Backtest(self, symbol, timeframe, strategy):
-        self.symbol = symbol
-        self.timeframe = timeframe
-        self.strategy = strategy
+    def Backtest(self):
         self.df = self.get_ohlcv()
         self.df = self.add_strategy(self.df, self.strategy)
         self.df = self.run(self.df, self.strategy)
-        self.result, self.df = self.get_results(self.df, self.timeframe)
+        self.result, self.df = self.get_results(self.df, self.backtest_range)
         return self.result, self.df
 
     def get_ohlcv(self):
@@ -74,27 +74,27 @@ class Backtest(Connector):
 
     def macd_signal(self, df, which_day: int):
         '''Generate MACD signal'''
-        if df.iloc[which_day]['MACD'] > df.iloc[which_day]['MACD_signal'] and df.iloc[which_day-1]['MACD'] < df.iloc[which_day-1]['MACD_signal']:
+        if df.iloc[which_day]['MACD'] > df.iloc[which_day]['MACD_signal']:
             return 'buy'
-        elif df.iloc[which_day]['MACD'] < df.iloc[which_day]['MACD_signal'] and df.iloc[which_day-1]['MACD'] > df.iloc[which_day-1]['MACD_signal']:
+        elif df.iloc[which_day]['MACD'] < df.iloc[which_day]['MACD_signal']:
             return 'sell'
         else:
             return ''
 
     def kd_signal(self, df, which_day: int):
         '''Generate ATR signal'''
-        if df.iloc[which_day]['K'] > df.iloc[which_day]['D'] and df.iloc[which_day-1]['K'] < df.iloc[which_day-1]['D']:
+        if df.iloc[which_day]['K'] > df.iloc[which_day]['D']:
             return 'buy'
-        elif df.iloc[which_day]['K'] < df.iloc[which_day]['D'] and df.iloc[which_day-1]['K'] > df.iloc[which_day-1]['D']:
+        elif df.iloc[which_day]['K'] < df.iloc[which_day]['D']:
             return 'sell'
         else:
             return ''
 
     def ema_signal(self, df, which_day: int):
         '''Generate EMA signal'''
-        if df.iloc[which_day]['EMA_short'] > df.iloc[which_day]['EMA_long'] and df.iloc[which_day-1]['EMA_short'] < df.iloc[which_day-1]['EMA_long']:
+        if df.iloc[which_day]['EMA_short'] > df.iloc[which_day]['EMA_long']:
             return 'buy'
-        elif df.iloc[which_day]['EMA_short'] < df.iloc[which_day]['EMA_long'] and df.iloc[which_day-1]['EMA_short'] > df.iloc[which_day-1]['EMA_long']:
+        elif df.iloc[which_day]['EMA_short'] < df.iloc[which_day]['EMA_long']:
             return 'sell'
         else:
             return ''
@@ -123,7 +123,9 @@ class Backtest(Connector):
         indicators = []
         for strategy in strategiy_list:
             indicators.append(strategy[0])
-        df['pnl'] = 0
+        cum_ret = 1
+        df['ret'] = 0
+        df['cum_ret'] = 0
         df['signal'] = ''
         signal = ''
         for i in range(1, len(df)):
@@ -140,32 +142,21 @@ class Backtest(Connector):
                 signal = ''
                 df.loc[i, 'signal'] = 'sell'
                 exit_price = df.loc[i, 'close']
-                df.loc[i, 'pnl'] = (exit_price - entry_price) / entry_price
+                df.loc[i, 'ret'] = (exit_price - entry_price) / entry_price
+                cum_ret = cum_ret * (1 + df.loc[i, 'ret'])
+                df.loc[i, 'cum_ret'] = cum_ret
             elif signal == 'sell' and trade_signal == 'buy':
                 signal = ''
                 df.loc[i, 'signal'] = 'buy'
                 exit_price = df.loc[i, 'close']
-                df.loc[i, 'pnl'] = (entry_price - exit_price) / entry_price
+                df.loc[i, 'ret'] = (entry_price - exit_price) / entry_price
+                cum_ret = cum_ret * (1 + df.loc[i, 'ret'])
+                df.loc[i, 'cum_ret'] = cum_ret
             else:
                 df.loc[i, 'signal'] = signal
         return df
 
-    def convert_timeframe_to_year(self, df, timeframe: str):
-        '''Convert the timeframe to year'''
-        if timeframe == '1d':
-            return len(df) / 365
-        elif timeframe == '1h':
-            return len(df) / 365 / 24
-        elif timeframe == '30m':
-            return len(df) / 365 / 24 / 2
-        elif timeframe == '15m':
-            return len(df) / 365 / 24 / 4
-        elif timeframe == '5m':
-            return len(df) / 365 / 24 / 12
-        elif timeframe == '1m':
-            return len(df) / 365 / 24 / 60
-
-    def get_results(self, df, timeframe: str):
+    def get_results(self, df, backtest_range: str):
         '''
         Get the results of the backtest. A dict and a dataframe
         Return:
@@ -173,39 +164,23 @@ class Backtest(Connector):
             df: dataframe
 
         '''
-        df['pnl'] = df['pnl'].fillna(0)
-        df['cum_pnl'] = np.cumsum(df['pnl'])
-        df['cum_pnl'] = df['cum_pnl'].fillna(0)
-        df['cum_pnl'] = df['cum_pnl'] + 1
-        df['cum_pnl'] = df['cum_pnl'].cumprod()
-        df['cum_pnl'] = df['cum_pnl'].fillna(1)
-        df['cum_pnl'] = df['cum_pnl'] - 1
-        df['cum_pnl'] = df['cum_pnl'] * 100
-        df['cum_pnl'] = df['cum_pnl'].round(2)
-        cagr = np.sign(df['cum_pnl'].iloc[-1] / 100) * np.power(np.abs(df['cum_pnl'].iloc[-1] / 100), 1 / self.convert_timeframe_to_year(df, timeframe)) - 1
-        cagr = cagr * 100
-        cagr = cagr.round(2)
-        df['max_drawdown'] = df['cum_pnl'].cummax() - df['cum_pnl']
-        df['max_drawdown'] = df['max_drawdown'].fillna(0)
-        pnl = round(df['pnl'].sum(), 2)
-        max_drawdown = float(df['max_drawdown'].max())
-        max_drawdown = round(max_drawdown, 2)
-        volatility = df['pnl'].std()
-        volatility = volatility * np.sqrt(365)
-        volatility = volatility * 100
-        volatility = volatility.round(2)
-        sharpe_ratio = cagr / volatility
-        sharpe_ratio = sharpe_ratio.round(2)
+        cagr = CAGR(df, backtest_range)
+        pnl = df['ret'].sum()
+        max_drawdown = max_dd(df)
+        vol = volatility(df)
+        sharpe_ratio = sharpe(df, 0.0398, backtest_range)
         results = {
             "cagr": cagr,
             "pnl": pnl,
             "max_drawdown": max_drawdown,
-            "volatility": volatility,
+            "volatility": vol,
             "sharpe_ratio": sharpe_ratio
         }
         return results, df
 
 if __name__ == '__main__':
-    backtest = Backtest('Binance', 'BTC/USDT', '1h')
-    df = backtest.get_ohlcv()
-    print(df)
+    strategy = [{"MACD":{"fast":"12", "slow":"26", "signal": "9"}}, {"EMA":{"ema_short_len":"7", "ema_long_len":"25"}}]
+    backtest = Backtest('BTC/USDT', '1h', '1mon', strategy)
+    result, df = backtest.Backtest()
+    df.to_csv('result.csv')
+    print(result)

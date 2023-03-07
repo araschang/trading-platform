@@ -1,0 +1,100 @@
+.info_square{
+    width:1000px;
+    display: flex;
+    gap:1.5rem;
+    flex-direction: column;
+}
+.info_big_title{
+    color: #667AF5;
+    font-weight: bold;
+    font-size: 32px;
+}
+.info_title{
+    font-weight: bold;
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+.info_subtitle{
+    font-weight: 700;
+    font-size: 16px;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    color: #5F5F5F;
+  
+}
+.info_one{
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.info_one_income_square{
+    gap:0.5rem;
+    background: #FFFFFF;
+border-radius: 8px;
+width: 460px;
+height: 300px;
+}
+.info_one_price_square{
+    background: #FFFFFF;
+border-radius: 8px;
+width: 520px;
+height: 300px;
+
+}
+.info_two_square{
+    width:1000px;
+    background: #FFFFFF;
+border-radius: 8px;
+height: 140px;
+display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.info_two_square_text{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-direction: column;
+}
+.info_two_square_text_title{
+    font-weight: bold;
+}
+.info_two_square_text_content{
+    font-weight: bold;
+    color: #667AF5;
+
+}
+.info_three_square{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.info_three_mood{
+    width:350px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    height: 200px;
+}
+.info_three_topic{
+    width:320px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    height: 200px;
+}
+.info_three_news{
+    width:300px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    height: 200px;
+}
+.news_url{
+    color: #667AF5;
+    font-weight: bold;
+    font-size: 14px;
+}
+.news_top{
+    font-size: 14px;
+    color: #5F5F5F;
+    
+}

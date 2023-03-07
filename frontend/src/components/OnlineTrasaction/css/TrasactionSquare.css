@@ -1,0 +1,162 @@
+.Tra_square{
+    width:800px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: row;
+}
+.Tra_title_text{
+    padding:0 0 0 10px;
+    font-weight: bold;
+    font-size: 16px;
+}
+.Tra_title_text_info{
+    padding:0 10px 0 0;
+    font-weight: bold;
+    color:#667AF5;
+}
+.Tra_title_text_position{
+    width: 200px;
+    height: 150px;
+    background: #FFFFFF;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-direction: column;
+}
+.Tra_title_text_info_position{
+    gap:1rem;
+    display: flex;
+}
+.Tra_left{
+    width: 320px;
+
+    gap:1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+}
+.Tra_right{
+    width: 350px;
+    gap:1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+
+}
+.Tra_left_one{
+    width: 320px;
+    background-color: white;
+    border-radius: 8px;
+    height: 152px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Tra_left_two{
+    width: 320px;
+    background-color: white;
+    border-radius: 8px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Tra_right_one{
+    width: 350px;
+    background-color: white;
+    border-radius: 8px;
+    height: 152px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-direction: column;
+}
+.Tra_right_one_text{
+    display: flex;
+    width: 350px;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-direction: row;
+}
+.Tra_right_one_account{
+    display: flex;
+    justify-content: space-around;
+    gap:1rem;
+    align-items: flex-end;
+    flex-direction: column;
+    padding-left: 10rem;
+}
+.Tra_right_two{
+    width: 350px;
+    background-color: white;
+    border-radius: 8px;
+    height: 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.Tra_right_three{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    width: 350px;
+}
+.Tra_right_three_position{
+    width: 170px;
+    border-radius: 8px;
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+    gap:1rem;
+    align-items: center;
+    flex-direction: column;
+}
+.Tra_right_three_square{
+    width: 170px;
+    background-color: white;
+    border: 0px;
+    border-radius: 8px;
+    height: 120px;
+    display: flex;
+    justify-content: space-evenly;
+    gap:0.5rem;
+    align-items: flex-start;
+    flex-direction: column;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
+.Tra_right_three_square:focus{
+    border:2px solid #667AF5
+}
+.Tra_title{
+    font-size: 20px;
+    font-weight:bold;
+    color:#667AF5;
+    display:flex;
+    align-self:flex-start;
+}
+.Tra_input_square{
+    width:70px;
+    height: 20px;
+    border-radius: 8px;
+    background-color: #E9ECEF;
+    border: 0;
+    margin-right: 10px;
+}
+.Tra_input_square:focus{
+    border-color:#667AF5;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 3px #667AF5;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 3px #667AF5
+}
+.Tra_title_text_content{
+    padding-left: 10px;
+}
+
+.Tra_input_square.account{
+    width:130px;}

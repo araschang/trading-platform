@@ -14,3 +14,4 @@ backend/test.py
 backend/my_module.py
 backend/venv/
 backend/todo
+.DS_Store

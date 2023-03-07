@@ -24,8 +24,8 @@ class BacktestController(Resource):
         timeframe = data['timeframe']
         strategy = data['strategy']
         backtest_range = data['backtest_range']
-        backtest = Backtest(symbol, timeframe, backtest_range)
-        result, df = backtest.Backtest(symbol, timeframe, strategy)
+        backtest = Backtest(symbol, timeframe, backtest_range, strategy)
+        result, df = backtest.Backtest()
 
         result['email'] = email
         result['id'] = self._backtestResultConnection.count_documents({'email': email}) + 1

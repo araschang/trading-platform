@@ -58,32 +58,45 @@ const StrategySquare = (props) => {
   const handleStrategy = (e) => {
     // e.preventDefault();
     console.log(checkedStra);
-    AuthService.backtest(exchange, email, symbol, timeframe, checkedStra, monthValue).then(
-      (res) => {
-        // navigate("/profile");
-        // window.location.reload();
-        // console.log(email, password);
-        // console.log(res);
-
-        if (res === 200) {
-          navigate('/Choose');
-        }
-        // else {
-        //   window.location.reload();
-        // }
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        // setLoading(false);
-        // setMessage(resMessage);
+    navigate('/Info', {
+      state: {
+        exchange: exchange,
+        email: email,
+        symbol: symbol,
+        strategy: checkedStra,
       }
-    );
+    });
+    // AuthService.backtest(exchange, email, symbol, timeframe, checkedStra, monthValue).then(
+    //   (res) => {
+    //     // navigate("/profile");
+    //     // window.location.reload();
+    //     // console.log(email, password);
+    //     // console.log(res);
+
+    //     navigate('/Choose', {
+    //       state: {
+    //         exchange: exchange,
+    //         email: email,
+    //         symbol: symbol,
+    //         strategy: checkedStra,
+    //       }
+    //     });
+    //     // else {
+    //     //   window.location.reload();
+    //     // }
+    //   },
+    //   (error) => {
+    //     const resMessage =
+    //       (error.response &&
+    //         error.response.data &&
+    //         error.response.data.message) ||
+    //       error.message ||
+    //       error.toString();
+
+    //     // setLoading(false);
+    //     // setMessage(resMessage);
+    //   }
+    // );
   };
 
 

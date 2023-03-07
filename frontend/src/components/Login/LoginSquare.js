@@ -34,9 +34,7 @@ const LoginSquare = (props) => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-
     setMessage("");
-
     AuthService.register(email, password).then(
       (res) => {
         console.log(res['data']);
@@ -44,7 +42,6 @@ const LoginSquare = (props) => {
         if (res === 200) {
           window.location.reload('/Choose');
         }
-
       },
       (error) => {
         const resMessage =
@@ -76,7 +73,7 @@ const LoginSquare = (props) => {
 
         setMessage(res);
         if (res === 200) {
-          navigate('/Choose');
+          navigate('/Choose', { state: { email: email } });
         }
         // else {
         //   window.location.reload();

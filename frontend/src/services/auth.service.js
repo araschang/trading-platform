@@ -37,8 +37,18 @@ const getCurrentUser = () => {
 };
 
 const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) => {
+    console.log({
+        exchange: exchange,
+        email: email,
+        symbol: symbol,
+        timeframe: timeframe,
+        strategy: strategy,
+        backtest_range: backtest_range
+    }
+
+    );
     return axios
-        .post(API_URL + "backtest", {
+        .post(API_URL + "backtest/" + email, {
             exchange: exchange,
             email: email,
             symbol: symbol,
@@ -54,7 +64,7 @@ const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) 
 
 const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy) => {
     return axios
-        .post(API_URL + "backtest", {
+        .post(API_URL + "trade", {
             email: email,
             exchange: exchange,
             api_key: api_key,
@@ -66,20 +76,15 @@ const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, m
             strategy: strategy
         })
         .then((response) => {
-            console.log(response);
             return response.data;
         });
 };
 
 
 const backtestGet = (email) => {
-    console.log({ "email": email });
     return axios
-        .get(API_URL + "backtest", {
-            'email': email
-        })
+        .get(API_URL + "backtest/" + email)
         .then((response) => {
-            console.log(response);
             return response.data;
         });
 };

@@ -39,7 +39,7 @@ def job_sentiment():
 
 api.add_resource(
     BacktestController,
-    '/backtest',
+    '/backtest/<email>',
     )
 
 api.add_resource(

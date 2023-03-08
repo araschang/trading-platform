@@ -13,40 +13,8 @@ const InfoSquare = (props) => {
   const exchange = state.exchange;
   const symbol = state.symbol;
   const strategy = state.strategy;
+  const timeframe = state.timeframe;
   const backtest = JSON.parse(state.backtest);
-  var time = [];
-  var cum_ret = [];
-  var close = [];
-  var volume = [];
-  for (var i = 0; i < backtest.length; i++) {
-    var tempDate = new Date(backtest[i]["time"]);
-    tempDate = tempDate.toISOString();
-    time.push(tempDate);
-    cum_ret.push([tempDate, backtest[i]["cum_ret"]]);
-    close.push([tempDate, backtest[i]["close"]]);
-    volume.push([tempDate, backtest[i]["volume"]]);
-  }
-  AuthService.backtestGet(email).then(
-    (res) => {
-      console.log(res);
-      var cagr = res.cagr;
-      var max_drawdown = res.max_drawdown;
-      var volatility = res.volatility;
-      var sharpe_ratio = res.sharpe_ratio;
-      var pnl = res.pnl;
-    },
-    (error) => {
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-
-      // setLoading(false);
-      // setMessage(resMessage);
-    }
-  );
 
   // 年複合成長率、最大交易回落、波動率、夏普比率、贏率
   const [cagr, setCAGRValue] = useState();
@@ -69,6 +37,44 @@ const InfoSquare = (props) => {
   const onPNLChange = (e) => {
     setPNLValue(e.target.value);
   };
+
+  var time = [];
+  var cum_ret = [];
+  var close = [];
+  var volume = [];
+  for (var i = 0; i < backtest.length; i++) {
+    var tempDate = new Date(backtest[i]["time"]);
+    tempDate = tempDate.toISOString();
+    time.push(tempDate);
+    cum_ret.push([tempDate, backtest[i]["cum_ret"]]);
+    close.push([tempDate, backtest[i]["close"]]);
+    volume.push([tempDate, backtest[i]["volume"]]);
+  }
+  AuthService.backtestGet(email).then(
+    (res) => {
+      console.log(res[res.length - 1]);
+      res = res[res.length - 1];
+      console.log(res.cagr);
+      setCAGRValue(res.cagr.toFixed(2));
+      setMAXDValue((res.max_drawdown * 100).toFixed(2));
+      setVOLValue((res.volatility * 100).toFixed(2));
+      setSHARPElValue(res.sharpe_ratio.toFixed(2));
+      setPNLValue((res.pnl * 100).toFixed(2));
+    },
+    (error) => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+
+      // setLoading(false);
+      // setMessage(resMessage);
+    }
+  );
+
+
 
 
   class IncomeChart extends PureComponent {
@@ -436,6 +442,7 @@ const InfoSquare = (props) => {
             exchange: exchange,
             email: email,
             symbol: symbol,
+            timeframe: timeframe,
             strategy: strategy,
             backtest: backtest
           }

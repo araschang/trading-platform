@@ -30,15 +30,6 @@ function TrasactionPage() {
         }}>
 
         <TrasactionSquare />
-
-        <div className="button_group" >
-          <button className="Tra_back_button" onClick={() => navigate('/Info')}>
-            <span>資訊一覽</span>
-          </button>
-          <button className="Tra_next_button" onClick={() => navigate('/Success')}>
-            <span>確認交易</span>
-          </button>
-        </div>
       </div>
     </div>
   );

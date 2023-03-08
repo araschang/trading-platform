@@ -57,34 +57,22 @@ const StrategySquare = (props) => {
 
   const handleStrategy = (e) => {
     // e.preventDefault();
-    // console.log(exchange, email, symbol, timeframe, checkedStra, monthValue);
-    // navigate('/Info', {
-    //   state: {
-    //     exchange: exchange,
-    //     email: email,
-    //     symbol: symbol,
-    //     strategy: checkedStra,
-    //   }
-    // });
-    const tempStra = [{ "KD": { "period": "10" } }];
-    console.log(exchange, email, symbol, timeframe, tempStra, monthValue);
-    AuthService.backtest(exchange, email, symbol, timeframe, tempStra, monthValue).then(
+    var checkedStrategy = [{ "MACD": checkedStra['MACD'] }, { "EMA": checkedStra['EMA'] }];
+    console.log(checkedStrategy);
+    AuthService.backtest(exchange, email, symbol, timeframe, checkedStrategy, monthValue).then(
       (res) => {
         // navigate("/profile");
         // window.location.reload();
-        // console.log(email, password);
         navigate('/Info', {
           state: {
             exchange: exchange,
             email: email,
             symbol: symbol,
+            timeframe: timeframe,
             strategy: checkedStra,
             backtest: res
           }
         });
-        // else {
-        //   window.location.reload();
-        // }
       },
       (error) => {
         const resMessage =
@@ -115,7 +103,7 @@ const StrategySquare = (props) => {
 
   useEffect(() => {
     console.log("checkedItems: ", checkedStra);
-  }, [checkedStra, fast, slow, signal, ema_long_len, ema_short_len]);
+  }, [checkedStra]);
 
   const strategyMethods = {
     MACD: {
@@ -250,62 +238,20 @@ const StrategySquare = (props) => {
             <div className="str_input">
               <div className="str_input_items macd">
                 <span className="str_input_text">快線長度：</span>
-                <input className="str_input_square macd" value={fast} onChange={onFastChange, handleCheck}></input>
+                <input type="value" className="str_input_square macd" value={fast} onChange={onFastChange}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">慢線長度：</span>
-                <input className="str_input_square macd" value={slow} onChange={onSlowChange, handleCheck}></input>
+                <input type="value" className="str_input_square macd" value={slow} onChange={onSlowChange}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">訊號長度：</span>
-                <input className="str_input_square macd" value={signal} onChange={onSignalChange, handleCheck}></input>
+                <input type="value" className="str_input_square macd" value={signal} onChange={onSignalChange}></input>
               </div>
             </div>
           </div>
         </div>
-        <div className="square_item">  {/* 情緒 */}
-          <input type='checkbox' class="str_checkbox" id='checkbox2' name={strategyMethods['Emotion'].name} checked={checkedStra[strategyMethods['Emotion'].name]} onChange={handleCheck} />
-          <label class="str_label" for="checkbox2"></label>
-          <div className="right"
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              gap: '10px',
-              alignItems: 'center',
-              flexDirection: 'column',
-              backgroundColor: 'white',
-              borderRadius: '8px'
-            }}>
-            <div className="str_title">
-              <span className="str_title_text">情緒策略</span>
-              <span className="str_title_text_ps">備註：依標的性質根據情緒買進或賣出</span>
-            </div>
-            <div className="str_input">
-              <div className="str_input_items macd">
-                <span className="str_input_text">低於：</span>
-                <input className="str_input_square"></input>
-                {/* {radio} */}
-                <input type="radio" style={{ marginRight: '-1px' }} class="str_radio_input" id='radioLow1' value='buy' onChange={onLowChange} name='moodLowValue' checked={moodLowValue === "buy"} />
-                <label class="str_radio_label" for="radioLow1"></label><small >買</small>
-                <input type="radio" style={{ marginRight: '-1px' }} class="str_radio_input" id='radioLow2' value='sold' onChange={onLowChange} name='moodLowValue' checked={moodLowValue === "sold"} />
-                <label class="str_radio_label" for="radioLow2"></label><small>賣</small>
 
-              </div>
-              <div className="str_input_items macd">
-                <span className="str_input_text">高於：</span>
-                <input className="str_input_square"></input>
-
-                {/* {radio} */}
-                <input type="radio" style={{ marginRight: '-1px' }} class="str_radio_input" id='radioHeight1' value='buy' onChange={onHeightChange} name='moodHeightValue' checked={moodHeightValue === "buy"} />
-                <label class="str_radio_label" for="radioHeight1"></label><small>買</small>
-                <input type="radio" style={{ marginRight: '-1px' }} class="str_radio_input" id='radioHeight2' value='sold' onChange={onHeightChange} name='moodHeightValue' checked={moodHeightValue === "sold"} />
-                <label class="str_radio_label" for="radioHeight2"></label><small>賣</small>
-
-
-              </div>
-            </div>
-          </div>
-        </div>
         <div className="square_item"> {/* EMA */}
           <input type='checkbox' class="str_checkbox" id='checkbox3' name={strategyMethods['EMA'].name} checked={checkedStra[strategyMethods['EMA'].name]} onChange={handleCheck} />
           <label class="str_label" for="checkbox3"></label>
@@ -326,11 +272,11 @@ const StrategySquare = (props) => {
             <div className="str_input">
               <div className="str_input_items macd">
                 <span className="str_input_text">短線：</span>
-                <input className="str_input_square" value={ema_short_len} onChange={onShortChange, handleCheck}></input>
+                <input type="value" className="str_input_square" value={ema_short_len} onChange={onShortChange}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">長線：</span>
-                <input className="str_input_square" value={ema_long_len} onChange={onLongChange, handleCheck}></input>
+                <input type="value" className="str_input_square" value={ema_long_len} onChange={onLongChange}></input>
               </div>
             </div>
           </div>

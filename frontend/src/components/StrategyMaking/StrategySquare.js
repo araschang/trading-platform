@@ -16,7 +16,7 @@ const StrategySquare = (props) => {
   const onTimeChange = (e) => {
     setTimeframe(e.target.value);
   };
-  const [monthValue, setMonthValue] = useState('1month');
+  const [monthValue, setMonthValue] = useState('1mon');
   const onMonthChange = (e) => {
     setMonthValue(e.target.value);
   };
@@ -57,17 +57,30 @@ const StrategySquare = (props) => {
 
   const handleStrategy = (e) => {
     // e.preventDefault();
-    console.log(checkedStra);
-    AuthService.backtest(exchange, email, symbol, timeframe, checkedStra, monthValue).then(
+    // console.log(exchange, email, symbol, timeframe, checkedStra, monthValue);
+    // navigate('/Info', {
+    //   state: {
+    //     exchange: exchange,
+    //     email: email,
+    //     symbol: symbol,
+    //     strategy: checkedStra,
+    //   }
+    // });
+    const tempStra = [{ "KD": { "period": "10" } }];
+    console.log(exchange, email, symbol, timeframe, tempStra, monthValue);
+    AuthService.backtest(exchange, email, symbol, timeframe, tempStra, monthValue).then(
       (res) => {
         // navigate("/profile");
         // window.location.reload();
         // console.log(email, password);
-        // console.log(res);
-
-        if (res === 200) {
-          navigate('/Choose');
-        }
+        navigate('/Info', {
+          state: {
+            exchange: exchange,
+            email: email,
+            symbol: symbol,
+            strategy: checkedStra,
+          }
+        });
         // else {
         //   window.location.reload();
         // }
@@ -101,7 +114,7 @@ const StrategySquare = (props) => {
 
   useEffect(() => {
     console.log("checkedItems: ", checkedStra);
-  }, [checkedStra]);
+  }, [checkedStra, fast, slow, signal, ema_long_len, ema_short_len]);
 
   const strategyMethods = {
     MACD: {
@@ -191,11 +204,11 @@ const StrategySquare = (props) => {
             </div >
             {/* radio */}
             <div className="str_input_items macd" style={{ width: '200px', flexDirection: 'row', display: 'flex', marginLeft: '4rem', marginBottom: '1rem' }}>
-              <input type="radio" class="str_radio_input" id='radioMonth1' value='1month' onChange={onMonthChange} name='monthValue' checked={monthValue === "1month"} />
+              <input type="radio" class="str_radio_input" id='radioMonth1' value='1mon' onChange={onMonthChange} name='monthValue' checked={monthValue === "1mon"} />
               <label class="str_radio_label" for="radioMonth1"></label><small >1個月</small>
-              <input type="radio" class="str_radio_input" id='radioMonth2' value='3month' onChange={onMonthChange} name='monthValue' checked={monthValue === "3month"} />
+              <input type="radio" class="str_radio_input" id='radioMonth2' value='3mon' onChange={onMonthChange} name='monthValue' checked={monthValue === "3mon"} />
               <label class="str_radio_label" for="radioMonth2"></label><small >3個月</small>
-              <input type="radio" class="str_radio_input" id='radioMonth3' value='6month' onChange={onMonthChange} name='monthValue' checked={monthValue === "6month"} />
+              <input type="radio" class="str_radio_input" id='radioMonth3' value='6mon' onChange={onMonthChange} name='monthValue' checked={monthValue === "6mon"} />
               <label class="str_radio_label" for="radioMonth3"></label><small >6個月</small>
             </div>
           </div>

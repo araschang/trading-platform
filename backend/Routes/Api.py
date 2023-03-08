@@ -72,9 +72,10 @@ api.add_resource(
     '/crawl',
 )
 
-scheduler.add_job(job_trade, 'interval', seconds=60)
-scheduler.add_job(job_sentiment, 'interval', days=1)
-scheduler.start()
+# scheduler.add_job(job_trade, 'interval', seconds=60)
+# scheduler.add_job(job_sentiment, 'interval', days=1)
+# scheduler.start()
 
 if __name__ == '__main__':
-    print(getSentimentScore())
+    # print(getSentimentScore())
+    app.run(debug=false)

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AlreadyLoginHeader from "../AlreadyLoginHeader";
 import "./css/StrategyPage.css";
 import MultiStepProgressBar from './TwoProgressBar';
+import React, { Component } from 'react';
 
 function StrategyPage() {
   const navigate = useNavigate()

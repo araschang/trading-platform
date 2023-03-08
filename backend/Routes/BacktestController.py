@@ -12,7 +12,20 @@ class BacktestController(Resource):
         self._backtestResultConnection = mongo.getBacktestResultConn()
     
     def get(self):
-        pass
+        '''
+        Get backtest results
+        Data json: email
+        '''
+        data = request.get_json()
+        email = data['email']
+        result = list(self._backtestResultConnection.find({'email': email}))
+
+        if len(result) == 0:
+            return ResponseCode.MEMBER_NOT_EXIST
+        
+        for i in range(len(result)):
+            result[i].pop('_id')
+        return result, ResponseCode.SUCCESS
 
     def post(self):
         '''
@@ -31,6 +44,7 @@ class BacktestController(Resource):
         result, df = backtest.Backtest()
 
         result['email'] = email
+        result['data'] = data
         result['id'] = self._backtestResultConnection.count_documents({'email': email}) + 1
 
         # save result to MongoDB

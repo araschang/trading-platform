@@ -11,13 +11,11 @@ class BacktestController(Resource):
         mongo = MongoConnector()
         self._backtestResultConnection = mongo.getBacktestResultConn()
     
-    def get(self):
+    def get(self, email):
         '''
         Get backtest results
         Data json: email
         '''
-        data = request.get_json()
-        email = data['email']
         result = list(self._backtestResultConnection.find({'email': email}))
 
         if len(result) == 0:

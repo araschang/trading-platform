@@ -3,6 +3,8 @@ sys.path.append('./backend')
 import pandas as pd
 import numpy as np
 import ccxt
+import warnings
+warnings.filterwarnings('ignore')
 from datetime import datetime, timedelta
 from Module.Indicators import *
 from Base.ConfigReader import Config
@@ -203,14 +205,20 @@ class Backtest(Connector):
 
         '''
         cagr = CAGR(df,self.timeframe, self.backtest_range)
-        pnl = df['ret'].sum()
+        pnl = float(df['ret'].sum())
         max_drawdown = max_dd(df)
         vol = volatility(df)
-        sharpe_ratio = sharpe(df, 0.0398, self.timeframe, self.backtest_range)
+        if vol == 0:
+            sharpe_ratio = 'NaN'
+        else:
+            sharpe_ratio = sharpe(df, 0.0398, self.timeframe, self.backtest_range)
 
         transactions = len(df[df['ret'] != 0])
         win = len(df[df['ret'] > 0])
-        winrate = win / transactions
+        if transactions == 0:
+            winrate = 'NaN'
+        else:
+            winrate = win / transactions
         results = {
             "cagr": cagr,
             "pnl": pnl,
@@ -223,7 +231,7 @@ class Backtest(Connector):
 
 if __name__ == '__main__':
     strategy = [{"KD":{"period": "14"}}, {"MACD":{"fast":"7", "slow":"26", "signal": "10"}}, {"EMA":{"ema_short_len":"20", "ema_long_len":"50"}}]
-    backtest = Backtest('BTC/USDT', '1h', '1mon', strategy)
+    backtest = Backtest('BTC/USDT', '1d', '1mon', strategy)
     result, df = backtest.Backtest()
     # df.to_csv('result.csv')
     print(result)

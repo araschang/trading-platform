@@ -462,7 +462,7 @@ const InfoSquare = (props) => {
             symbol: symbol,
             timeframe: timeframe,
             strategy: strategy,
-            backtest: backtest
+            backtest: state.backtest
           }
         })}>
           <span>前往交易</span>

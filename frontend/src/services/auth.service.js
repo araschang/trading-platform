@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/";
+const API_URL = "https://cat-jessie-vm.iottalktw.com/api/";
 
 const register = (email, password) => {
     return axios.post(API_URL + "membership", {

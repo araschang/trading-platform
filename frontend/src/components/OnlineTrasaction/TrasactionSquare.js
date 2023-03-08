@@ -12,6 +12,7 @@ const TrasactionSquare = (props) => {
   const symbol = state.symbol;
   const timeframe = state.timeframe;
   const strategy = state.strategy;
+  const backtest = state.backtest;
   console.log(strategy);
   var pass_phrase = "";
 
@@ -72,6 +73,22 @@ const TrasactionSquare = (props) => {
       }
     );
   };
+
+  const handleBackInfo = (e) => {
+
+    navigate('/Info', {
+      state: {
+        exchange: exchange,
+        email: email,
+        symbol: symbol,
+        timeframe: timeframe,
+        strategy: strategy,
+        backtest: backtest
+      }
+    });
+
+  };
+
 
 
 
@@ -143,7 +160,7 @@ const TrasactionSquare = (props) => {
       </div >
 
       <div className="button_group" >
-        <button className="Tra_back_button" onClick={() => navigate('/Info')}>
+        <button className="Tra_back_button" onClick={handleBackInfo}>
           <span>資訊一覽</span>
         </button>
         <button className="Tra_next_button" onClick={handleTranscation}>

@@ -4,6 +4,7 @@ import json
 from flask_restful import Resource
 from Base.Connector import MongoConnector
 from Base.ResponseCode import ResponseCode
+from Module.Wordcloud import getWordCloud
 
 
 class SentimentalAnalysisController(Resource):
@@ -35,3 +36,11 @@ class PriceNewsCrawlController(Resource):
         with open(path) as f:
             j = json.load(f)
         return j, ResponseCode.SUCCESS
+
+class WordCloudController(Resource):
+    def get(self):
+        '''
+        Get word cloud data.
+        '''
+        code = getWordCloud()
+        return code, ResponseCode.SUCCESS

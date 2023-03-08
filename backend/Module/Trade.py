@@ -159,7 +159,7 @@ class Trade(object):
         current_price = current_price.iloc[0]['close']
 
         # calculate the amount of the position
-        amount = self.money / current_price
+        amount = float(self.money) / current_price
 
         # open the position
         self.exchange.create_order(self.symbol, 'market', side, amount)

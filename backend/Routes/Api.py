@@ -4,7 +4,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from Routes.BacktestController import BacktestController
 from Routes.TradeController import TradeController, TradeTransactionController
 from Routes.MembershipController import MembershipController, MemberLoginController
-from Routes.DataScienceController import SentimentalAnalysisController, PriceNewsCrawlController
+from Routes.DataScienceController import SentimentalAnalysisController, PriceNewsCrawlController, WordCloudController
 from Module.Trade import Trade
 from Module.ML_Sentimental.SentimentalAnalysis import getSentimentScore
 from Base.Connector import MongoConnector
@@ -71,6 +71,11 @@ api.add_resource(
 api.add_resource(
     PriceNewsCrawlController,
     '/crawl',
+)
+
+api.add_resource(
+    WordCloudController,
+    '/wordcloud',
 )
 
 scheduler.add_job(job_trade, 'interval', seconds=30)

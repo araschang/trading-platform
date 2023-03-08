@@ -1,11 +1,11 @@
 import ChooseSquare from "./ChooseSquare";
-import React, { Component } from 'react';
+import React from 'react';
 import { useNavigate } from "react-router-dom";
 import AlreadyLoginHeader from "../AlreadyLoginHeader"
 import "./css/ChoosePage.css"
 import OneProgressBar from './OneProgressBar'
 function ChoosePage() {
-  const navigate = useNavigate()
+  // const navigate = useNavigate();
   return (
     <div>
 
@@ -33,9 +33,7 @@ function ChoosePage() {
         <ChooseSquare />
 
 
-        <button className="choose_next_button" style={{ top: '10%' }} onClick={() => navigate('/Strategy')}>
-          <span>下一步</span>
-        </button>
+
 
       </div>
     </div>

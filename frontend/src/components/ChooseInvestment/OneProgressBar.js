@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import "./css/OneProgressBar.css";
 import { ProgressBar, Step } from "react-step-progress-bar";
 import { useNavigate } from "react-router-dom";
 
 
 const OneProgressBar = ({ page, onPageNumberClick }) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
 
 

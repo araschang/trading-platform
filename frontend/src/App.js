@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import LoginPage from './components/Login/LoginPage';
 import ChoosePage from './components/ChooseInvestment/ChoosePage';
 import InfoPage from './components/InfoForm/InfoPage';
@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { Route, Routes } from "react-router-dom";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState('ChoosePage');
+  // const [currentPage, setCurrentPage] = useState('ChoosePage');
   return (
     <div>
 

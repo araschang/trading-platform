@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import './css/TrasactionSquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { Radio } from 'antd';
@@ -48,7 +48,7 @@ const TrasactionSquare = (props) => {
     // e.preventDefault();
 
     // setMessage("");
-
+    console.log({ email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy });
     AuthService.tradeImply(email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy).then(
       (res) => {
         console.log(res);

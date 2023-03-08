@@ -1,11 +1,10 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import './css/SuccessSquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import SuccessIcon from "./SuccessIcon.png"
 
 
 const SuccessSquare = (props) => {
-  const { setCurrentPage } = props;
   const navigate = useNavigate();
   const { state } = useLocation();
   const exchange = state.exchange;

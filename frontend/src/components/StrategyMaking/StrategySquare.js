@@ -1,16 +1,16 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useRef, useEffect } from "react";
 import './css/StrategySquare.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Radio } from 'antd';
 import AuthService from "../../services/auth.service";
 
 const StrategySquare = (props) => {
   // const { setCurrentPage } = props;
   const navigate = useNavigate()
-
+  const { state } = useLocation();
   const [exchange] = useState('Binance');
-  const [email] = useState('happy@hotmail.com');
+  const email = state.email;
   const [symbol] = useState('BTC/USDT');
   const [timeframe, setTimeframe] = useState('1m');
   const onTimeChange = (e) => {
@@ -26,14 +26,17 @@ const StrategySquare = (props) => {
   const [fast, setFastValue] = useState();
   const onFastChange = (e) => {
     setFastValue(e.target.value);
+    setCheckedStra({ ...checkedStra, ['MACD']: { "fast": fast, "slow": slow, "signal": signal } })
   };
   const [slow, setSlowValue] = useState();
   const onSlowChange = (e) => {
     setSlowValue(e.target.value);
+    setCheckedStra({ ...checkedStra, ['MACD']: { "fast": fast, "slow": slow, "signal": signal } })
   };
   const [signal, setSignalValue] = useState();
   const onSignalChange = (e) => {
     setSignalValue(e.target.value);
+    setCheckedStra({ ...checkedStra, ['MACD']: { "fast": fast, "slow": slow, "signal": signal } })
   };
   // Emotion
   const [moodLowValue, setMoodLowValue] = useState('buy');
@@ -48,10 +51,12 @@ const StrategySquare = (props) => {
   const [ema_short_len, setShortValue] = useState();
   const onShortChange = (e) => {
     setShortValue(e.target.value);
+    setCheckedStra({ ...checkedStra, ["EMA"]: { "ema_short_len": ema_short_len, "ema_long_len": ema_long_len } });
   };
   const [ema_long_len, setLongValue] = useState();
   const onLongChange = (e) => {
     setLongValue(e.target.value);
+    setCheckedStra({ ...checkedStra, ["EMA"]: { "ema_short_len": ema_short_len, "ema_long_len": ema_long_len } });
   };
 
 

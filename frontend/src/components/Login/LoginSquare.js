@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './css/LoginSquare.css';
 import AuthService from "../../services/auth.service";
@@ -14,7 +14,6 @@ const required = (value) => {
 };
 
 const LoginSquare = (props) => {
-  const { setCurrentPage } = props;
   const navigate = useNavigate();
   const form = useRef();
   const [password, setPassword] = useState("");
@@ -34,7 +33,7 @@ const LoginSquare = (props) => {
 
   const handleRegister = (e) => {
     e.preventDefault();
-
+    console.log("Register!");
     setMessage("");
 
     AuthService.register(email, password).then(
@@ -42,7 +41,16 @@ const LoginSquare = (props) => {
         console.log(res['data']);
         setMessage(res['data']);
         if (res === 200) {
-          window.location.reload('/Choose');
+          window.location.reload();
+        }
+        if (res === 401) {
+          setMessage("Member Already Exist");
+        }
+        if (res === 402) {
+          setMessage("Member not Exist");
+        }
+        if (res === 402) {
+          setMessage("Wrong Password");
         }
 
       },
@@ -60,11 +68,14 @@ const LoginSquare = (props) => {
     );
   };
 
+  useEffect(() => {
+  }, [email, password]);
+
   const handleLogin = (e) => {
     e.preventDefault();
-
+    console.log("Login!");
     setMessage("");
-    setLoading(true);
+    // setLoading(true);
 
 
     AuthService.login(email, password).then(
@@ -74,7 +85,22 @@ const LoginSquare = (props) => {
         // console.log(email, password);
         // console.log(res);
 
-        setMessage(res);
+        if (res === 200) {
+          navigate('/Choose', {
+            state: {
+              email: email,
+            }
+          });
+        }
+        if (res === 401) {
+          setMessage("Member Already Exist");
+        }
+        if (res === 402) {
+          setMessage("Member not Exist");
+        }
+        if (res === 403) {
+          setMessage("Wrong Password");
+        }
         if (res === 200) {
           navigate('/Choose');
         }
@@ -124,27 +150,21 @@ const LoginSquare = (props) => {
         <form ref={form} onSubmit={handleLogin}> {/*登入*/}
           <button className="login_button" disabled={loading}>
             {/* <button className="login_button" disabled={loading} onClick={() => navigate('/Choose')}> */}
-            {loading && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
             <span>Login</span>
           </button>
         </form>
         <form ref={form} onSubmit={handleRegister}> {/*註冊*/}
           <button className="register_button" disabled={loading}>
-            {loading && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
             <span>Register</span>
           </button>
         </form>
-        {message && (
-          <div className="center alert-danger" role="alert">
-            {message}
-          </div>
-        )}
-      </div>
 
+      </div>
+      {message && (
+        <div className="center str_title_text">
+          {message}
+        </div>
+      )}
     </div>
   );
 };

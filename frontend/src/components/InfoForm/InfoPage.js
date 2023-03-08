@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import InfoSquare from "./InfoSquare";
 import MultiStepProgressBar from './ThreeProgressBar'
 import { useNavigate } from "react-router-dom";
 import AlreadyLoginHeader from "../AlreadyLoginHeader"
 import "./css/InfoPage.css"
 function InfoPage() {
-  const navigate = useNavigate()
+
   return (
     <div>
       <AlreadyLoginHeader />

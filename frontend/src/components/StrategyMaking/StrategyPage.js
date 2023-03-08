@@ -1,12 +1,10 @@
 import InfoSquare from "./StrategySquare";
-import { useNavigate } from "react-router-dom";
 import AlreadyLoginHeader from "../AlreadyLoginHeader";
 import "./css/StrategyPage.css";
 import MultiStepProgressBar from './TwoProgressBar';
-import React, { Component } from 'react';
+import React from 'react';
 
 function StrategyPage() {
-  const navigate = useNavigate()
   return (
     <div>
 

@@ -31,16 +31,23 @@ def MACD(DF, fast=12, slow=26, signal=9):
 def EMA(df, length):
     return df['close'].ewm(com=length, min_periods=length).mean()
 
-def CAGR(DF, backtest_range):
+def CAGR(DF, timeframe, backtest_range):
     "function to calculate the Cumulative Annual Growth Rate of a trading strategy"
     df = DF.copy()
     df["cum_return"] = (1 + df["ret"]).cumprod()
-    if backtest_range == '1mon':
+    if timeframe == '1m':
+        n = (1/365)
+    elif timeframe == '5m':
+        n = (5/365)
+    elif timeframe == '1h':
         n = (1/12)
-    elif backtest_range == '3mon':
-        n = (3/12)
-    elif backtest_range == '6mon':
-        n = (6/12)
+    elif timeframe == '4h' or timeframe == '1d':
+        if backtest_range == '1mon':
+            n = (1/12)
+        elif backtest_range == '3mon':
+            n = (3/12)
+        elif backtest_range == '6mon':
+            n = (6/12)
     CAGR = (df["cum_return"].tolist()[-1])**(1/n) - 1
     return CAGR
 
@@ -50,10 +57,10 @@ def volatility(DF):
     vol = df["ret"].std() * np.sqrt(252*78)
     return vol
 
-def sharpe(DF, rf, backtest_range):
+def sharpe(DF, rf, timeframe, backtest_range):
     "function to calculate sharpe ratio ; rf is the risk free rate"
     df = DF.copy()
-    sr = (CAGR(df, backtest_range) - rf)/volatility(df)
+    sr = (CAGR(df, timeframe, backtest_range) - rf)/volatility(df)
     return sr
 
 def max_dd(DF):

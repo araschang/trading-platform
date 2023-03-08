@@ -1,5 +1,3 @@
-import sys
-sys.path.append('./backend')
 import pandas as pd
 import numpy as np
 import ccxt
@@ -29,23 +27,27 @@ class Backtest(Connector):
         self.timeframe = timeframe
         self.backtest_range = backtest_range
         self.strategy = strategy
-        if self.backtest_range == '1mon':
-            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=30))) * 1000
-        elif self.backtest_range == '3mon':
-            self.start = datetime.timestamp(datetime.now() - timedelta(days=90)) * 1000
-        elif self.backtest_range == '6mon':
-            self.start = datetime.timestamp(datetime.now() - timedelta(days=180)) * 1000
+        if self.timeframe == '1m': # 抓一天資料強制回測一天
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=1))) * 1000
+        elif self.timeframe == '5m': # 抓五天資料強制回測三天
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=5))) * 1000
+        elif self.timeframe == '1h': # 抓兩個月資料強制回測一個月
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=60))) * 1000
+        elif self.timeframe == '4h': # 自由選擇回測區間
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=250))) * 1000
+        elif self.timeframe == '1d': # 自由選擇回測區間
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=1000))) * 1000
     
     def Backtest(self):
         self.df = self.get_ohlcv()
         self.df = self.add_strategy(self.df, self.strategy)
         self.df = self.run(self.df, self.strategy)
-        self.result, self.df = self.get_results(self.df, self.backtest_range)
+        self.result, self.df = self.get_results(self.df)
         return self.result, self.df
 
     def get_ohlcv(self):
         '''Get a year OHLCV data from the exchange'''
-        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, since=self.start)
+        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, since=self.start, limit=3000)
         df = pd.DataFrame(ohlcv, columns=['time', 'open', 'high', 'low', 'close', 'volume'])
         df['time'] = pd.to_datetime(df['time'], unit='ms')
         return df
@@ -128,7 +130,28 @@ class Backtest(Connector):
         df['cum_ret'] = 0
         df['signal'] = ''
         signal = ''
-        for i in range(1, len(df)):
+        if self.timeframe == '1m': # 1d
+            range_from = 0
+        elif self.timeframe == '5m': # 5d
+            range_from = len(df) - (1442 - 575)
+        elif self.timeframe == '1h': # 1mon
+            range_from = len(df) - (1439 - 767)
+        elif self.timeframe == '4h':
+            if self.backtest_range == '1mon':
+                range_from = len(df) - (1499 - 1331)
+            elif self.backtest_range == '3mon':
+                range_from = len(df) - (1499 - 959)
+            elif self.backtest_range == '6mon':
+                range_from = len(df) - (1499 - 413)
+        elif self.timeframe == '1d':
+            if self.backtest_range == '1mon':
+                range_from = len(df) - 30
+            elif self.backtest_range == '3mon':
+                range_from = len(df) - 90
+            elif self.backtest_range == '6mon':
+                range_from = len(df) - 180
+        
+        for i in range(range_from, len(df)):
             trade_signal = self.check_trade(df, i, indicators)
             if signal == '' and trade_signal == 'buy':
                 signal = 'buy'
@@ -154,9 +177,10 @@ class Backtest(Connector):
                 df.loc[i, 'cum_ret'] = cum_ret
             else:
                 df.loc[i, 'signal'] = signal
+        df = df.loc[range_from: , :]
         return df
 
-    def get_results(self, df, backtest_range: str):
+    def get_results(self, df):
         '''
         Get the results of the backtest. A dict and a dataframe
         Return:
@@ -164,23 +188,28 @@ class Backtest(Connector):
             df: dataframe
 
         '''
-        cagr = CAGR(df, backtest_range)
+        cagr = CAGR(df,self.timeframe, self.backtest_range)
         pnl = df['ret'].sum()
         max_drawdown = max_dd(df)
         vol = volatility(df)
-        sharpe_ratio = sharpe(df, 0.0398, backtest_range)
+        sharpe_ratio = sharpe(df, 0.0398, self.timeframe, self.backtest_range)
+
+        transactions = len(df[df['ret'] != 0])
+        win = len(df[df['ret'] > 0])
+        winrate = win / transactions
         results = {
             "cagr": cagr,
             "pnl": pnl,
             "max_drawdown": max_drawdown,
             "volatility": vol,
-            "sharpe_ratio": sharpe_ratio
+            "sharpe_ratio": sharpe_ratio,
+            "win_rate": winrate
         }
         return results, df
 
 if __name__ == '__main__':
-    strategy = [{"MACD":{"fast":"12", "slow":"26", "signal": "9"}}, {"EMA":{"ema_short_len":"7", "ema_long_len":"25"}}]
+    strategy = [{"KD":{"period": "14"}}, {"MACD":{"fast":"7", "slow":"26", "signal": "10"}}, {"EMA":{"ema_short_len":"20", "ema_long_len":"50"}}]
     backtest = Backtest('BTC/USDT', '1h', '1mon', strategy)
     result, df = backtest.Backtest()
-    df.to_csv('result.csv')
+    # df.to_csv('result.csv')
     print(result)

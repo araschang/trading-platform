@@ -10,6 +10,9 @@ class BacktestController(Resource):
         pass
         mongo = MongoConnector()
         self._backtestResultConnection = mongo.getBacktestResultConn()
+    
+    def get(self):
+        pass
 
     def post(self):
         '''

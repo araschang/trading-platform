@@ -1,3 +1,5 @@
+import sys
+sys.path.append('./backend')
 import pandas as pd
 import numpy as np
 import ccxt
@@ -42,6 +44,7 @@ class Backtest(Connector):
         self.df = self.get_ohlcv()
         self.df = self.add_strategy(self.df, self.strategy)
         self.df = self.run(self.df, self.strategy)
+        self.df = self.format_df_to_plot(self.df)
         self.result, self.df = self.get_results(self.df)
         return self.result, self.df
 
@@ -178,6 +181,17 @@ class Backtest(Connector):
             else:
                 df.loc[i, 'signal'] = signal
         df = df.loc[range_from: , :]
+        df.reset_index(drop=True, inplace=True)
+        return df
+    
+    def format_df_to_plot(self, df):
+        df['cum_ret_format'] = df['cum_ret'] - 1
+        df['cum_ret_format'][df['cum_ret_format'] == -1] = 0
+        unzero_list = list(df[df['cum_ret_format'] != 0].index.values)
+        unzero_list.append(len(df))
+        for i in range(len(unzero_list)-1):
+            for j in range(unzero_list[i], unzero_list[i+1]):
+                df['cum_ret_format'][j] = df['cum_ret_format'][unzero_list[i]]
         return df
 
     def get_results(self, df):

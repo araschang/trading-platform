@@ -25,7 +25,7 @@ class BacktestController(Resource):
             result[i].pop('_id')
         return result, ResponseCode.SUCCESS
 
-    def post(self):
+    def post(self, email):
         '''
         Backtest a strategy.
         Data json: exchange, email, symbol, timeframe, strategy, backtest_range
@@ -33,7 +33,6 @@ class BacktestController(Resource):
         
         data = request.get_json()
         exchange = data['exchange']
-        email = data['email']
         symbol = data['symbol']
         timeframe = data['timeframe']
         strategy = data['strategy']

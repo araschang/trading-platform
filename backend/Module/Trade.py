@@ -33,7 +33,16 @@ class Trade(object):
         self.symbol = symbol
         self.timeframe = timeframe
         self.strategy = strategy
-        self.start = int(datetime.timestamp(datetime.now() - timedelta(days=100))) * 1000
+        if self.timeframe == '1m': # 抓一天資料強制回測一天
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=1))) * 1000
+        elif self.timeframe == '5m': # 抓五天資料強制回測三天
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=5))) * 1000
+        elif self.timeframe == '1h': # 抓兩個月資料強制回測一個月
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=60))) * 1000
+        elif self.timeframe == '4h': # 自由選擇回測區間
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=250))) * 1000
+        elif self.timeframe == '1d': # 自由選擇回測區間
+            self.start = int(datetime.timestamp(datetime.now() - timedelta(days=1000))) * 1000
     
     def Trade(self):
         self.df = self.get_ohlcv()
@@ -51,8 +60,6 @@ class Trade(object):
             self.close_position('buy')
         # check if the member is already have a position
         # if not, create a new position
-
-        
         return signal
     
     def check_if_position_exist(self):
@@ -65,7 +72,7 @@ class Trade(object):
         
     def get_ohlcv(self):
         '''Get a year OHLCV data from the exchange'''
-        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, since=self.start)
+        ohlcv = self.exchange.fetch_ohlcv(self.symbol, self.timeframe, since=self.start, limit=3000)
         df = pd.DataFrame(ohlcv, columns=['time', 'open', 'high', 'low', 'close', 'volume'])
         df['time'] = pd.to_datetime(df['time'], unit='ms')
         return df

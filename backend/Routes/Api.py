@@ -77,5 +77,4 @@ api.add_resource(
 # scheduler.start()
 
 if __name__ == '__main__':
-    # print(getSentimentScore())
-    app.run(debug=false)
+    print(getSentimentScore())

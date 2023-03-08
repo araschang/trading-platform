@@ -48,20 +48,51 @@ const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) 
         })
         .then((response) => {
             console.log(response);
-            if (response.data.account) {
-                localStorage.setItem("user", JSON.stringify(response.data));
-            }
-
             return response.data;
         });
 };
+
+const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy) => {
+    return axios
+        .post(API_URL + "backtest", {
+            email: email,
+            exchange: exchange,
+            api_key: api_key,
+            api_secret: api_secret,
+            pass_phrase: pass_phrase,
+            symbol: symbol,
+            money: money,
+            timeframe: timeframe,
+            strategy: strategy
+        })
+        .then((response) => {
+            console.log(response);
+            return response.data;
+        });
+};
+
+
+const backtestGet = (email) => {
+    console.log({ "email": email });
+    return axios
+        .get(API_URL + "backtest", {
+            'email': email
+        })
+        .then((response) => {
+            console.log(response);
+            return response.data;
+        });
+};
+
 
 const AuthService = {
     register,
     login,
     logout,
     getCurrentUser,
-    backtest
+    backtest,
+    tradeImply,
+    backtestGet
 }
 
 export default AuthService;

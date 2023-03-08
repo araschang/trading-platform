@@ -79,6 +79,7 @@ const StrategySquare = (props) => {
             email: email,
             symbol: symbol,
             strategy: checkedStra,
+            backtest: res
           }
         });
         // else {
@@ -249,15 +250,15 @@ const StrategySquare = (props) => {
             <div className="str_input">
               <div className="str_input_items macd">
                 <span className="str_input_text">快線長度：</span>
-                <input className="str_input_square macd" value={fast} onChange={onFastChange}></input>
+                <input className="str_input_square macd" value={fast} onChange={onFastChange, handleCheck}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">慢線長度：</span>
-                <input className="str_input_square macd" value={slow} onChange={onSlowChange}></input>
+                <input className="str_input_square macd" value={slow} onChange={onSlowChange, handleCheck}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">訊號長度：</span>
-                <input className="str_input_square macd" value={signal} onChange={onSignalChange}></input>
+                <input className="str_input_square macd" value={signal} onChange={onSignalChange, handleCheck}></input>
               </div>
             </div>
           </div>
@@ -325,11 +326,11 @@ const StrategySquare = (props) => {
             <div className="str_input">
               <div className="str_input_items macd">
                 <span className="str_input_text">短線：</span>
-                <input className="str_input_square" value={ema_short_len} onChange={onShortChange}></input>
+                <input className="str_input_square" value={ema_short_len} onChange={onShortChange, handleCheck}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">長線：</span>
-                <input className="str_input_square" value={ema_long_len} onChange={onLongChange}></input>
+                <input className="str_input_square" value={ema_long_len} onChange={onLongChange, handleCheck}></input>
               </div>
             </div>
           </div>

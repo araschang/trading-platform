@@ -31,14 +31,7 @@ function InfoPage() {
 
         <InfoSquare />
 
-        <div className="button_group" >
-          <button className="info_back_button" onClick={() => navigate('/Strategy')}>
-            <span>重新回測</span>
-          </button>
-          <button className="info_next_button" onClick={() => navigate('/Trasaction')}>
-            <span>前往交易</span>
-          </button>
-        </div>
+
       </div>
     </div>
   );

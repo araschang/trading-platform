@@ -5,6 +5,7 @@ def get_news():
     from selenium.webdriver.support.ui import WebDriverWait
     from selenium.webdriver.support import expected_conditions as EC
     import platform
+    import json
 
     options = Options()
     options.add_argument("--disable-notifications")
@@ -44,7 +45,10 @@ def get_news():
     titile = [i.text for i in report]
 
     news[titile[0]] = links[0]
-    return news
+
+    path = './backend/Module/PriceNews/result.json'
+    with open(path, 'w') as fp:
+        json.dump(news, fp)
 
 if __name__ == '__main__':
     news = get_news()

@@ -135,8 +135,8 @@ const TrasactionSquare = (props) => {
               </div>
             </div>
             <div className="Tra_right_one_account">
-              <span>帳號 <input type="text" className="Tra_input_square account" name="api_key" value={api_key} onChange={onAPIKChange}></input></span>
-              <span>密碼 <input type="password" className="Tra_input_square account" name="api_secret" value={api_secret} onChange={onAPISecretChange}></input></span>
+              <span>API key <input type="text" className="Tra_input_square account" name="api_key" value={api_key} onChange={onAPIKChange}></input></span>
+              <span>API secret <input type="password" className="Tra_input_square account" name="api_secret" value={api_secret} onChange={onAPISecretChange}></input></span>
             </div>
 
           </div>

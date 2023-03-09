@@ -29,7 +29,7 @@ function SuccessPage() {
         }}></div>
         <SuccessSquare />
 
-        <button className="next_button" onClick={() => navigate('/')}>
+        <button className="next_button" onClick={() => navigate('/Choose')}>
           <span>確定</span>
         </button>
 

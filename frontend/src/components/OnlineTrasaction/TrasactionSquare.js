@@ -129,7 +129,7 @@ const TrasactionSquare = (props) => {
               {/* radio */}
               <div className="str_input_items macd" style={{ width: '200px', flexDirection: 'row', display: 'flex', paddingRight: '10px', justifyContent: 'flex-end' }}>
                 <input type="radio" class="str_radio_input" id='radioExchange1' value='Binance' onChange={onExchangeChange} name='exchangeValue' checked={exchange === "Binance"} />
-                <label class="str_radio_label" for="radioExchange1"></label><small >幣安</small>
+                <label class="str_radio_label" for="radioExchange1"></label><small >Binance</small>
                 <input type="radio" class="str_radio_input" id='radioExchange2' value='OKX' onChange={onExchangeChange} name='exchangeValue' checked={exchange === "OKX"} />
                 <label class="str_radio_label" for="radioExchange2"></label><small >OKX</small>
               </div>

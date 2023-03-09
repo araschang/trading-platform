@@ -41,6 +41,7 @@ const LoginSquare = (props) => {
         console.log(res['data']);
         // setMessage(res['data']);
         if (res['data'] === 200) {
+          setMessage("Register Success!");
           window.location.reload();
         }
         if (res['data'] === 401) {

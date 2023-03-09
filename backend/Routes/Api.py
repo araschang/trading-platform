@@ -12,7 +12,7 @@ import datetime
 
 app = Flask(__name__)
 api = Api(app)
-scheduler = BackgroundScheduler()
+scheduler = BackgroundScheduler(job_defaults={'max_instances': 3})
 
 def job_trade():
     tradeMemberList = MongoConnector().getTradeMemberConn().find({})

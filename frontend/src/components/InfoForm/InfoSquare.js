@@ -110,23 +110,23 @@ const InfoSquare = (props) => {
       }
     );
 
-    AuthService.sentimentGet().then(
-      (res) => {
-        if (typeof res === 'number') {
-          res = res.toFixed(0);
-        }
-        sentiment = res;
-        console.log(sentiment);
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
+    // AuthService.sentimentGet().then(
+    //   (res) => {
+    //     if (typeof res === 'number') {
+    //       res = res.toFixed(0);
+    //     }
+    //     sentiment = res;
+    //     console.log(sentiment);
+    //   },
+    //   (error) => {
+    //     const resMessage =
+    //       (error.response &&
+    //         error.response.data &&
+    //         error.response.data.message) ||
+    //       error.message ||
+    //       error.toString();
+    //   }
+    // );
 
     AuthService.crawlGet().then(
       (res) => {
@@ -164,12 +164,33 @@ const InfoSquare = (props) => {
 
   }, []);
 
-  const MoodChart = ({ sentiment }) => {
+  const MoodChart = () => {
     const eChartsRef = useRef(null);
+    const [sentiment, setSentiment] = useState(0);
+
+    useEffect(() => {
+      AuthService.sentimentGet().then(
+        (res) => {
+          if (typeof res === 'number') {
+            res = res.toFixed(0);
+          }
+          setSentiment(res);
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    }, []);
 
     useEffect(() => {
       const myChart = eCharts.init(eChartsRef.current);
-      const option = {
+
+      let option = {
         series: [
           {
             type: 'gauge',
@@ -181,188 +202,162 @@ const InfoSquare = (props) => {
             max: 100,
             progress: {
               show: true,
-              width: 18,
+              width: 18
             },
             axisLine: {
               lineStyle: {
-                width: 18,
-              },
+                width: 18
+              }
             },
             axisTick: {
-              show: false,
+              show: false
             },
             splitLine: {
               length: 15,
               lineStyle: {
                 width: 2,
-                color: '#999',
-              },
+                color: '#999'
+              }
             },
             itemStyle: {
               color: '#58D9F9',
               shadowColor: 'rgba(0,138,255,0.45)',
               shadowBlur: 10,
               shadowOffsetX: 2,
-              shadowOffsetY: 2,
+              shadowOffsetY: 2
             },
             grid: {
-              width: '50%',
+              width: '50%'
             },
             axisLabel: {
-              show: false,
+              show: false
             },
             title: {
-              show: false,
+              show: false
             },
             detail: {
               valueAnimation: true,
               fontSize: 30,
-              offsetCenter: [0, '70%'],
+              offsetCenter: [0, '70%']
             },
             data: [
               {
-                value: sentiment,
-              },
-            ],
-          },
-        ],
+                value: sentiment
+              }
+            ]
+          }
+        ]
       };
+
       myChart.setOption(option);
     }, [sentiment]);
 
     return (
       <div>
-        <div
-          ref={eChartsRef}
-          style={{
-            width: 300,
-            height: 160,
-            marginLeft: 0,
-            zIndex: '-1',
-          }}
-        ></div>
-        <div
-          style={{
-            display: 'flex',
-            width: '300px',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            zIndex: '10',
-            position: 'relative',
-            bottom: '50px',
-            left: '33px',
-          }}
-        >
+        <div ref={eChartsRef} style={{
+          width: 300,
+          height: 160,
+          marginLeft: 0,
+          zIndex: '-1'
+        }}></div>
+        <div style={{
+          display: 'flex',
+          width: '300px',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          zIndex: '10',
+          position: 'relative',
+          bottom: '50px',
+          left: '33px',
+        }}>
           <span>負向</span>
           <span>正向</span>
         </div>
       </div>
     );
-  };
+  }
 
-  // class MoodChart extends PureComponent {
-  //   eChartsRef: any = React.createRef();
 
-  //   constructor() {
-  //     super();
-  //     this.state = {
-  //       chartData: sentiment,
+
+  // const MoodChart = ({ sentiment }) => {
+  //   const eChartsRef = useRef(null);
+
+  //   useEffect(() => {
+  //     const myChart = eCharts.init(eChartsRef.current);
+  //     const option = {
+  //       series: [
+  //         {
+  //           type: 'gauge',
+  //           center: ['60%', '50%'],
+  //           radius: '90%',
+  //           startAngle: 180,
+  //           endAngle: 0,
+  //           min: -100,
+  //           max: 100,
+  //           progress: {
+  //             show: true,
+  //             width: 18,
+  //           },
+  //           axisLine: {
+  //             lineStyle: {
+  //               width: 18,
+  //             },
+  //           },
+  //           axisTick: {
+  //             show: false,
+  //           },
+  //           splitLine: {
+  //             length: 15,
+  //             lineStyle: {
+  //               width: 2,
+  //               color: '#999',
+  //             },
+  //           },
+  //           itemStyle: {
+  //             color: '#58D9F9',
+  //             shadowColor: 'rgba(0,138,255,0.45)',
+  //             shadowBlur: 10,
+  //             shadowOffsetX: 2,
+  //             shadowOffsetY: 2,
+  //           },
+  //           grid: {
+  //             width: '50%',
+  //           },
+  //           axisLabel: {
+  //             show: false,
+  //           },
+  //           title: {
+  //             show: false,
+  //           },
+  //           detail: {
+  //             valueAnimation: true,
+  //             fontSize: 30,
+  //             offsetCenter: [0, '70%'],
+  //           },
+  //           data: [
+  //             {
+  //               value: sentiment,
+  //             },
+  //           ],
+  //         },
+  //       ],
   //     };
-  //   }
+  //     myChart.setOption(option);
+  //   }, [sentiment]);
 
-
-  //   componentDidMount() {
-  //     setTimeout(() => {
-  //       const myChart = eCharts.init(this.eChartsRef.current);
-
-  //       let option = {
-  //         series: [
-  //           {
-  //             type: 'gauge',
-  //             center: ['60%', '50%'],
-  //             radius: '90%',
-  //             startAngle: 180,
-  //             endAngle: 0,
-  //             min: -100,
-  //             max: 100,
-  //             progress: {
-  //               show: true,
-  //               width: 18
-  //             },
-  //             axisLine: {
-  //               lineStyle: {
-  //                 width: 18
-  //               }
-  //             },
-  //             axisTick: {
-  //               show: false
-  //             },
-  //             splitLine: {
-  //               length: 15,
-  //               lineStyle: {
-  //                 width: 2,
-  //                 color: '#999'
-  //               }
-  //             },
-  //             itemStyle: {
-  //               color: '#58D9F9',
-  //               shadowColor: 'rgba(0,138,255,0.45)',
-  //               shadowBlur: 10,
-  //               shadowOffsetX: 2,
-  //               shadowOffsetY: 2
-  //             },
-  //             grid: {
-  //               width: '50%'
-  //             },
-  //             axisLabel: {
-  //               show: false
-  //             },
-
-  //             title: {
-  //               show: false
-  //             },
-  //             detail: {
-  //               valueAnimation: true,
-  //               fontSize: 30,
-  //               offsetCenter: [0, '70%']
-  //             },
-  //             data: [
-  //               {
-  //                 value: this.state.chartData,
-  //               }
-  //             ]
-  //           }
-  //         ]
-  //       };
-  //       myChart.setOption(option);
-  //     })
-
-  //   }
-
-  //   componentDidUpdate() {
-  //     if (sentiment !== this.sentiment) {
-  //       this.setState({
-  //         chartData: this.props.sentiment,
-  //       });
-  //       const myChart = eCharts.init(this.eChartsRef.current);
-  //       let option = myChart.getOption();
-  //       option.series[0].data[0].value = this.props.sentiment;
-  //       myChart.setOption(option);
-  //     }
-  //   }
-
-
-
-  //   render() {
-  //     return (
-  //       <div>
-  //         <div ref={this.eChartsRef} style={{
+  //   return (
+  //     <div>
+  //       <div
+  //         ref={eChartsRef}
+  //         style={{
   //           width: 300,
   //           height: 160,
   //           marginLeft: 0,
-  //           zIndex: '-1'
-  //         }}></div>
-  //         <div style={{
+  //           zIndex: '-1',
+  //         }}
+  //       ></div>
+  //       <div
+  //         style={{
   //           display: 'flex',
   //           width: '300px',
   //           justifyContent: 'space-around',
@@ -371,13 +366,15 @@ const InfoSquare = (props) => {
   //           position: 'relative',
   //           bottom: '50px',
   //           left: '33px',
-  //         }}>
-  //           <span>負向</span>
-  //           <span>正向</span>
-  //         </div>
-  //       </div>)
-  //   }
-  // }
+  //         }}
+  //       >
+  //         <span>負向</span>
+  //         <span>正向</span>
+  //       </div>
+  //     </div>
+  //   );
+  // };
+
   class IncomeChart extends PureComponent {
     eChartsRef: any = React.createRef();
 

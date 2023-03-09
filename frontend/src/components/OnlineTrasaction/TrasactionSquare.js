@@ -26,7 +26,7 @@ const TrasactionSquare = (props) => {
   const onExchangeChange = (e) => {
     setExchangeValue(e.target.value);
     if (exchange === "OKX")
-      pass_phrase = "OKX";
+      pass_phrase = "Aras3427@";
   };
 
   const [api_key, setAPIKValue] = useState();

@@ -1,5 +1,7 @@
 import ccxt
 import pandas as pd
+import sys
+sys.path.append('./backend')
 from datetime import datetime, timedelta
 from Base.ConfigReader import Config
 from Base.Connector import MongoConnector
@@ -46,9 +48,12 @@ class Trade(object):
     
     def Trade(self):
         self.df = self.get_ohlcv()
-        self.strategy = JsonParser.parse_strategies(self.strategy)
         self.df = self.add_strategy(self.df, self.strategy)
-        signal = self.check_trade(self.df, len(self.df)-1, self.strategy)
+        self.strategy = JsonParser.parse_strategies(self.strategy)
+        indicators = []
+        for strategy in self.strategy:
+            indicators.append(strategy[0])
+        signal = self.check_trade(self.df, len(self.df)-1, indicators)
         has_position = self.check_if_position_exist()
         if signal == 'buy' and not has_position:
             self.open_position('buy')
@@ -64,8 +69,8 @@ class Trade(object):
     
     def check_if_position_exist(self):
         result = self._tradeMemberConnection.find_one({'id': self.id})
-        result = list(result)
-        if result[0]['has_position'] == '1':
+        result['has_position'] = int(result['has_position'])
+        if result['has_position'] == 1:
             return True
         else:
             return False
@@ -154,7 +159,7 @@ class Trade(object):
         current_price = current_price.iloc[0]['close']
 
         # calculate the amount of the position
-        amount = self.money / current_price
+        amount = float(self.money) / current_price
 
         # open the position
         self.exchange.create_order(self.symbol, 'market', side, amount)
@@ -206,6 +211,16 @@ class Trade(object):
         }
         self._tradeMemberConnection.update_one({'id': self.id}, {'$set': member_data})
 
-
+if __name__ == '__main__':
+    exchange = "Binance"
+    api_key = "Af245tCHxHvrKWOqrzA2T8lUPRNjlkuIPZqq9SnzrltBxdFZ7jJhigTLVEbQX70d"
+    api_secret = "7mMylwUxLaIt8MaSzeoRUltOSdNDS2CT9pheQaPpPeoldNjL6pveeu6DPAXQKZVB"
+    pass_phrase = ""
+    symbol = "BTC/USDT"
+    money = "15"
+    timeframe =  "1h"
+    stratege = [{"KD":{"period": "14"}}, {"MACD":{"fast":"7", "slow":"26", "signal": "10"}}, {"EMA":{"ema_short_len":"20", "ema_long_len":"50"}}]
+    trade = Trade(1, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, stratege)
+    trade.Trade()
 
 

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "https://cat-jessie-vm.iottalktw.com/api/";
+const API_URL = "http://127.0.0.1:5000/";
 
 const register = (email, password) => {
     return axios.post(API_URL + "membership", {
@@ -89,6 +89,31 @@ const backtestGet = (email) => {
         });
 };
 
+const crawlGet = () => {
+    return axios
+        .get(API_URL + "crawl")
+        .then((response) => {
+            return response.data;
+        });
+};
+
+const sentimentGet = () => {
+    return axios
+        .get(API_URL + "sentiment")
+        .then((response) => {
+            return response.data;
+        });
+};
+
+const wordCloudGet = () => {
+    return axios
+        .get(API_URL + "wordcloud")
+        .then((response) => {
+            return response.data;
+        });
+};
+
+
 
 const AuthService = {
     register,
@@ -97,7 +122,10 @@ const AuthService = {
     getCurrentUser,
     backtest,
     tradeImply,
-    backtestGet
+    backtestGet,
+    sentimentGet,
+    crawlGet,
+    wordCloudGet
 }
 
 export default AuthService;

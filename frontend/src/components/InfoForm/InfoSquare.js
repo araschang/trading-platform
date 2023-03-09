@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useRef, PureComponent } from "react";
+import React, { useState, useRef, PureComponent, useEffect } from "react";
 import './css/InfoSquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import * as eCharts from "echarts";
@@ -8,6 +8,7 @@ import AuthService from "../../services/auth.service";
 import moment from 'moment'
 
 const InfoSquare = (props) => {
+
   const navigate = useNavigate()
   const { state } = useLocation();
   const email = state.email;
@@ -16,7 +17,6 @@ const InfoSquare = (props) => {
   const strategy = state.strategy;
   const timeframe = state.timeframe;
   const backtest = JSON.parse(state.backtest);
-  console.log(email);
   // 年複合成長率、最大交易回落、波動率、夏普比率、贏率
   const [cagr, setCAGRValue] = useState();
   const onCAGRChange = (e) => {
@@ -38,6 +38,20 @@ const InfoSquare = (props) => {
   const onWINChange = (e) => {
     setWINValue(e.target.value);
   };
+  var [sentiment, setSentiValue] = useState();
+  const onSentiChange = (e) => {
+    setSentiValue(e.target.value);
+  };
+
+  var [news, setNews] = useState();
+  const onNewsChange = (e) => {
+    setNews(e.target.value);
+  };
+
+  var [wordcloud, setCloud] = useState();
+  const onCloudChange = (e) => {
+    setCloud(e.target.value);
+  };
 
   var time = [];
   var cum_ret = [];
@@ -51,50 +65,207 @@ const InfoSquare = (props) => {
     close.push([tempDate, backtest[i]["close"]]);
     volume.push([tempDate, backtest[i]["volume"]]);
   }
-  AuthService.backtestGet(email).then(
-    (res) => {
-      console.log(res[res.length - 1]);
-      res = res[res.length - 1];
 
-      console.log(typeof res.cagr);
-      if (typeof res.cagr === 'number') {
-        res.cagr = res.cagr.toFixed(2);
-      }
-      if (typeof res.max_drawdown === 'number') {
-        res.max_drawdown = (res.max_drawdown * 100).toFixed(2);
-      }
-      if (typeof res.volatility === 'number') {
-        res.volatility = (res.volatility * 100).toFixed(2);
-      }
-      if (typeof res.sharpe_ratio === 'number') {
-        res.sharpe_ratio = res.sharpe_ratio.toFixed(2);
-      }
-      if (typeof res.win_rate === 'number') {
-        res.win_rate = (res.win_rate * 100).toFixed(2);
-      }
+  var count = 0;
 
-      setCAGRValue(res.cagr);
-      setMAXDValue(res.max_drawdown);
-      setVOLValue(res.volatility);
-      setSHARPElValue(res.sharpe_ratio);
-      setWINValue(res.win_rate);
-    },
-    (error) => {
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
 
-      // setLoading(false);
-      // setMessage(resMessage);
+  useEffect(() => {
+    console.log('useEffect run ', count);
+    AuthService.backtestGet(email).then(
+      (res) => {
+        console.log(res[res.length - 1]);
+        res = res[res.length - 1];
+        if (typeof res.cagr === 'number') {
+          res.cagr = res.cagr.toFixed(2);
+        }
+        if (typeof res.max_drawdown === 'number') {
+          res.max_drawdown = (res.max_drawdown * 100).toFixed(2);
+        }
+        if (typeof res.volatility === 'number') {
+          res.volatility = (res.volatility * 100).toFixed(2);
+        }
+        if (typeof res.sharpe_ratio === 'number') {
+          res.sharpe_ratio = res.sharpe_ratio.toFixed(2);
+        }
+        if (typeof res.win_rate === 'number') {
+          res.win_rate = (res.win_rate * 100).toFixed(2);
+        }
+
+        setCAGRValue(res.cagr);
+        setMAXDValue(res.max_drawdown);
+        setVOLValue(res.volatility);
+        setSHARPElValue(res.sharpe_ratio);
+        setWINValue(res.win_rate);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        // setLoading(false);
+        // setMessage(resMessage);
+      }
+    );
+
+    AuthService.sentimentGet().then(
+      (res) => {
+        if (typeof res === 'number') {
+          res = res.toFixed(0);
+        }
+        sentiment = res;
+        console.log(sentiment);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
+    );
+
+    AuthService.crawlGet().then(
+      (res) => {
+        // console.log(res);
+        setNews(res);
+        news = res;
+        console.log(news);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
+    );
+
+
+
+    AuthService.wordCloudGet().then(
+      (res) => {
+        setCloud(res);
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+      }
+    );
+
+
+  }, [count]);
+
+  if (count === 0)
+    count += 1;
+
+  class MoodChart extends PureComponent {
+    eChartsRef: any = React.createRef();
+
+
+    componentDidMount() {
+      setTimeout(() => {
+        const myChart = eCharts.init(this.eChartsRef.current);
+
+        let option = {
+          series: [
+            {
+              type: 'gauge',
+              center: ['60%', '50%'],
+              radius: '90%',
+              startAngle: 180,
+              endAngle: 0,
+              min: -100,
+              max: 100,
+              progress: {
+                show: true,
+                width: 18
+              },
+              axisLine: {
+                lineStyle: {
+                  width: 18
+                }
+              },
+              axisTick: {
+                show: false
+              },
+              splitLine: {
+                length: 15,
+                lineStyle: {
+                  width: 2,
+                  color: '#999'
+                }
+              },
+              itemStyle: {
+                color: '#58D9F9',
+                shadowColor: 'rgba(0,138,255,0.45)',
+                shadowBlur: 10,
+                shadowOffsetX: 2,
+                shadowOffsetY: 2
+              },
+              grid: {
+                width: '50%'
+              },
+              axisLabel: {
+                show: false
+              },
+
+              title: {
+                show: false
+              },
+              detail: {
+                valueAnimation: true,
+                fontSize: 30,
+                offsetCenter: [0, '70%']
+              },
+              data: [
+                {
+                  value: { sentiment }
+                }
+              ]
+            }
+          ]
+        };
+        myChart.setOption(option);
+      })
+
     }
-  );
 
 
 
-
+    render() {
+      return (
+        <div>
+          <div ref={this.eChartsRef} style={{
+            width: 300,
+            height: 160,
+            marginLeft: 0,
+            zIndex: '-1'
+          }}></div>
+          <div style={{
+            display: 'flex',
+            width: '300px',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            zIndex: '10',
+            position: 'relative',
+            bottom: '50px',
+            left: '33px',
+          }}>
+            <span>負向</span>
+            <span>正向</span>
+          </div>
+        </div>)
+    }
+  }
   class IncomeChart extends PureComponent {
     eChartsRef: any = React.createRef();
 
@@ -282,99 +453,8 @@ const InfoSquare = (props) => {
       }}></div>;
     }
   }
-  class MoodChart extends PureComponent {
-    eChartsRef: any = React.createRef();
 
-    componentDidMount() {
-      const myChart = eCharts.init(this.eChartsRef.current);
 
-      let option = {
-        series: [
-          {
-            type: 'gauge',
-            center: ['60%', '50%'],
-            radius: '90%',
-            startAngle: 180,
-            endAngle: 0,
-            min: 0,
-            max: 100,
-            progress: {
-              show: true,
-              width: 18
-            },
-            axisLine: {
-              lineStyle: {
-                width: 18
-              }
-            },
-            axisTick: {
-              show: false
-            },
-            splitLine: {
-              length: 15,
-              lineStyle: {
-                width: 2,
-                color: '#999'
-              }
-            },
-            itemStyle: {
-              color: '#58D9F9',
-              shadowColor: 'rgba(0,138,255,0.45)',
-              shadowBlur: 10,
-              shadowOffsetX: 2,
-              shadowOffsetY: 2
-            },
-            grid: {
-              width: '50%'
-            },
-            axisLabel: {
-              show: false
-            },
-
-            title: {
-              show: false
-            },
-            detail: {
-              valueAnimation: true,
-              fontSize: 30,
-              offsetCenter: [0, '70%']
-            },
-            data: [
-              {
-                value: 50
-              }
-            ]
-          }
-        ]
-      };
-
-      myChart.setOption(option);
-    }
-    render() {
-      return (
-        <div>
-          <div ref={this.eChartsRef} style={{
-            width: 300,
-            height: 160,
-            marginLeft: 0,
-            zIndex: '-1'
-          }}></div>
-          <div style={{
-            display: 'flex',
-            width: '300px',
-            justifyContent: 'space-around',
-            alignItems: 'center',
-            zIndex: '10',
-            position: 'relative',
-            bottom: '50px',
-            left: '33px',
-          }}>
-            <span>負向</span>
-            <span>正向</span>
-          </div>
-        </div>)
-    }
-  }
 
   return (
     <div className="info_square">
@@ -430,6 +510,7 @@ const InfoSquare = (props) => {
           </div>
           <div className="info_three_topic">
             <div className="info_subtitle">社群媒體熱門話題</div>
+            <img class="center" src={`data:image/jpeg;base64,${wordcloud}`} width={220} height={160} />
           </div>
           <div className="info_three_news">
             <div className="info_subtitle">最近新聞連結</div>

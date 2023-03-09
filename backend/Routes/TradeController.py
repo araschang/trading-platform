@@ -9,14 +9,12 @@ class TradeController(Resource):
         mongo = MongoConnector()
         self._tradeMemberConnection = mongo.getTradeMemberConn()
 
-    def get(self):
+    def get(self, email):
         '''
         Get a member's working strategy.
         Data json: user
         '''
-        data = request.get_json()
-        user = data['email']
-        strategy = list(self._tradeMemberConnection.find({'email': user}))
+        strategy = list(self._tradeMemberConnection.find({'email': email}))
 
         if len(strategy) == 0:
             return ResponseCode.MEMBER_NOT_EXIST
@@ -25,13 +23,12 @@ class TradeController(Resource):
             strategy[i].pop('_id')
         return strategy, ResponseCode.SUCCESS
     
-    def post(self):
+    def post(self, email):
         '''
         Implement the strategy to the exchange. Send info to MongoDB.
         Data json: email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy
         '''
         data = request.get_json()
-        email = data['email']
         exchange = data['exchange']
         if exchange == 'Binance':
             api_key = data['api_key']
@@ -63,7 +60,7 @@ class TradeController(Resource):
         result = self._tradeMemberConnection.insert_one(trade)
         return ResponseCode.SUCCESS if result else ResponseCode.BAD_REQUEST
     
-    def put(self):
+    def put(self, email):
         '''
         Update the strategy. Send info to MongoDB.
         Data json: id, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy
@@ -97,7 +94,7 @@ class TradeController(Resource):
         result = self._tradeMemberConnection.update_one({'id': id}, {'$set': trade})
         return ResponseCode.SUCCESS if result else ResponseCode.BAD_REQUEST
 
-    def delete(self):
+    def delete(self, email):
         '''
         Delete the strategy. Send info to MongoDB.
         Data json: id
@@ -112,9 +109,7 @@ class TradeTransactionController(Resource):
         mongo = MongoConnector()
         self._tradeTransactionConnection = mongo.getTradeTransactionConn()
 
-    def get(self):
-        data = request.get_json()
-        email = data['email']
+    def get(self, email):
         result = list(self._tradeTransactionConnection.find({'email': email}))
 
         if len(result) == 0:

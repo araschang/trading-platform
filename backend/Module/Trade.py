@@ -1,7 +1,5 @@
 import ccxt
 import pandas as pd
-import sys
-sys.path.append('./backend')
 from datetime import datetime, timedelta
 from Base.ConfigReader import Config
 from Base.Connector import MongoConnector

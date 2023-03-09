@@ -3,23 +3,16 @@ import './css/ChooseSquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import bitcoin from './bitcoin.png'
 import ethereum from './ethereum.png'
+import AuthService from "../../services/auth.service";
 
 const ChooseSquare = (props) => {
   // const { setCurrentPage } = props;
 
   const navigate = useNavigate();
   const { state } = useLocation();
-  console.log(state);
-  const email = "yuan2001@live.com";
+  const email = AuthService.getCurrentUserEmail();
   const handleChoose = (e) => {
-    e.preventDefault();
-
-    navigate('/Strategy', {
-      state: {
-        email: email,
-      }
-    });
-
+    navigate('/Strategy');
   };
 
 

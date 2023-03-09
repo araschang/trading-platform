@@ -18,7 +18,7 @@ function App() {
         <Route path='/Choose' element={<ChoosePage />} />
         <Route path='/Strategy' element={<StrategyPage />} />
         <Route path='/Info' element={<InfoPage />} />
-        <Route path='/Trasaction' element={<TrasactionPage />} />
+        <Route path='/Transaction' element={<TrasactionPage />} />
         <Route path='/Success' element={<SuccessPage />} />
       </Routes>
     </div>

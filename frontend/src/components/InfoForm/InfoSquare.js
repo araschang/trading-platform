@@ -11,7 +11,7 @@ const InfoSquare = (props) => {
 
   const navigate = useNavigate()
   const { state } = useLocation();
-  const email = state.email;
+  const email = AuthService.getCurrentUserEmail();
   const exchange = state.exchange;
   const symbol = state.symbol;
   const strategy = state.strategy;
@@ -38,36 +38,19 @@ const InfoSquare = (props) => {
   const onWINChange = (e) => {
     setWINValue(e.target.value);
   };
-  var [sentiment, setSentiValue] = useState();
-  const onSentiChange = (e) => {
-    setSentiValue(e.target.value);
-  };
 
-  var [news, setNews] = useState();
-  const onNewsChange = (e) => {
-    setNews(e.target.value);
-  };
+  const time = [];
+  const cum_ret = [];
+  const close = [];
+  const volume = [];
 
-  var [wordcloud, setCloud] = useState();
-  const onCloudChange = (e) => {
-    setCloud(e.target.value);
-  };
-
-  var time = [];
-  var cum_ret = [];
-  var close = [];
-  var volume = [];
-  for (var i = 0; i < backtest.length; i++) {
-    var tempDate = new Date(backtest[i]["time"]);
-    tempDate = tempDate.toISOString();
+  backtest.forEach((item) => {
+    const tempDate = new Date(item.time).toISOString();
     time.push(tempDate);
-    cum_ret.push([tempDate, backtest[i]["cum_ret"]]);
-    close.push([tempDate, backtest[i]["close"]]);
-    volume.push([tempDate, backtest[i]["volume"]]);
-  }
-
-
-
+    cum_ret.push([tempDate, item.cum_ret]);
+    close.push([tempDate, item.close]);
+    volume.push([tempDate, item.volume]);
+  });
 
   useEffect(() => {
     console.log('useEffect run ');
@@ -104,65 +87,93 @@ const InfoSquare = (props) => {
             error.response.data.message) ||
           error.message ||
           error.toString();
-
-        // setLoading(false);
-        // setMessage(resMessage);
       }
     );
-
-    // AuthService.sentimentGet().then(
-    //   (res) => {
-    //     if (typeof res === 'number') {
-    //       res = res.toFixed(0);
-    //     }
-    //     sentiment = res;
-    //     console.log(sentiment);
-    //   },
-    //   (error) => {
-    //     const resMessage =
-    //       (error.response &&
-    //         error.response.data &&
-    //         error.response.data.message) ||
-    //       error.message ||
-    //       error.toString();
-    //   }
-    // );
-
-    AuthService.crawlGet().then(
-      (res) => {
-        // console.log(res);
-        setNews(res);
-        news = res;
-        console.log(news);
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
-
-
-
-    AuthService.wordCloudGet().then(
-      (res) => {
-        setCloud(res);
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-      }
-    );
-
-
   }, []);
+
+
+  function WordCloud() {
+    const [wordcloud, setCloud] = useState("");
+
+    useEffect(() => {
+      AuthService.wordCloudGet().then(
+        (res) => {
+          setCloud(res);
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+          console.log(resMessage);
+        }
+      );
+    }, []);
+
+    return (
+      <div className="info_three_topic">
+        <div className="info_subtitle">社群媒體熱門話題</div>
+        <img
+          className="center"
+          src={`data:image/jpeg;base64,${wordcloud}`}
+          width={220}
+          height={160}
+        />
+      </div>
+    );
+  }
+
+  function NewsList() {
+    const [news, setNews] = useState([]);
+
+    useEffect(() => {
+      AuthService.crawlGet().then(
+        (res) => {
+          const processedNews = {};
+          Object.keys(res).forEach((title, index) => {
+            if (index >= 3) return; // 只需要Top3
+            processedNews[title] = res[title];
+          });
+          setNews(processedNews);
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+        }
+      );
+    }, []);
+
+    return (
+      <div className="info_three_news">
+        <div className="info_subtitle">最近新聞連結</div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "flex-start",
+            flexDirection: "column",
+            height: "150px",
+            marginLeft: "3rem",
+          }}
+        >
+          {Object.keys(news).map((title, index) => (
+            <div key={index}>
+              <span className="news_top">Top {index + 1}</span>
+              <div className="news_url">
+                <a href={news[title]}>{title}</a>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   const MoodChart = () => {
     const eChartsRef = useRef(null);
@@ -277,111 +288,12 @@ const InfoSquare = (props) => {
     );
   }
 
+  const IncomeChart = () => {
+    const eChartsRef = useRef();
 
-
-  // const MoodChart = ({ sentiment }) => {
-  //   const eChartsRef = useRef(null);
-
-  //   useEffect(() => {
-  //     const myChart = eCharts.init(eChartsRef.current);
-  //     const option = {
-  //       series: [
-  //         {
-  //           type: 'gauge',
-  //           center: ['60%', '50%'],
-  //           radius: '90%',
-  //           startAngle: 180,
-  //           endAngle: 0,
-  //           min: -100,
-  //           max: 100,
-  //           progress: {
-  //             show: true,
-  //             width: 18,
-  //           },
-  //           axisLine: {
-  //             lineStyle: {
-  //               width: 18,
-  //             },
-  //           },
-  //           axisTick: {
-  //             show: false,
-  //           },
-  //           splitLine: {
-  //             length: 15,
-  //             lineStyle: {
-  //               width: 2,
-  //               color: '#999',
-  //             },
-  //           },
-  //           itemStyle: {
-  //             color: '#58D9F9',
-  //             shadowColor: 'rgba(0,138,255,0.45)',
-  //             shadowBlur: 10,
-  //             shadowOffsetX: 2,
-  //             shadowOffsetY: 2,
-  //           },
-  //           grid: {
-  //             width: '50%',
-  //           },
-  //           axisLabel: {
-  //             show: false,
-  //           },
-  //           title: {
-  //             show: false,
-  //           },
-  //           detail: {
-  //             valueAnimation: true,
-  //             fontSize: 30,
-  //             offsetCenter: [0, '70%'],
-  //           },
-  //           data: [
-  //             {
-  //               value: sentiment,
-  //             },
-  //           ],
-  //         },
-  //       ],
-  //     };
-  //     myChart.setOption(option);
-  //   }, [sentiment]);
-
-  //   return (
-  //     <div>
-  //       <div
-  //         ref={eChartsRef}
-  //         style={{
-  //           width: 300,
-  //           height: 160,
-  //           marginLeft: 0,
-  //           zIndex: '-1',
-  //         }}
-  //       ></div>
-  //       <div
-  //         style={{
-  //           display: 'flex',
-  //           width: '300px',
-  //           justifyContent: 'space-around',
-  //           alignItems: 'center',
-  //           zIndex: '10',
-  //           position: 'relative',
-  //           bottom: '50px',
-  //           left: '33px',
-  //         }}
-  //       >
-  //         <span>負向</span>
-  //         <span>正向</span>
-  //       </div>
-  //     </div>
-  //   );
-  // };
-
-  class IncomeChart extends PureComponent {
-    eChartsRef: any = React.createRef();
-
-
-    componentDidMount() {
-      var myChart = eCharts.init(this.eChartsRef.current);
-      let option = {
+    useEffect(() => {
+      const myChart = eCharts.init(eChartsRef.current);
+      const option = {
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -396,9 +308,7 @@ const InfoSquare = (props) => {
           type: 'time',
           boundaryGap: false,
           axisLabel: {
-            formatter: (function (value) {
-              return moment(value).format('DD:HH:mm');
-            })
+            formatter: (value) => moment(value).format('DD:HH:mm')
           }
         },
         yAxis: {
@@ -443,125 +353,139 @@ const InfoSquare = (props) => {
       };
 
       myChart.setOption(option);
-    }
 
-    render() {
-      return <div ref={this.eChartsRef} style={{
-        width: 480,
-        height: 300,
-        marginLeft: 10
-      }}></div>;
-    }
-  }
-  class PriceChart extends PureComponent {
-    //左y軸價格(橘色)，右y軸交易量(黃色)
-    eChartsRef: any = React.createRef();
+      return () => {
+        myChart.dispose();
+      };
+    }, []);
 
-    componentDidMount() {
-      const myChart = eCharts.init(this.eChartsRef.current);
+    return (
+      <div
+        ref={eChartsRef}
+        style={{
+          width: 480,
+          height: 300,
+          marginLeft: 10
+        }}
+      />
+    );
+  };
 
-      let option = {
+
+  const PriceChart = () => {
+    const eChartsRef = useRef(null);
+
+    useEffect(() => {
+      const myChart = eCharts.init(eChartsRef.current);
+
+      const option = {
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'cross',
+            type: "cross",
             label: {
-              backgroundColor: '#6a7985'
-            }
-          }
+              backgroundColor: "#6a7985",
+            },
+          },
         },
         legend: {
-          data: ['價格', '交易量'],
-          top: '5%'
+          data: ["價格", "交易量"],
+          top: "5%",
         },
         xAxis: {
-          type: 'time',
+          type: "time",
           boundaryGap: false,
           axisLabel: {
-            formatter: (function (value) {
-              return moment(value).format('DD:HH:mm');
-            })
-          }
-        },
-        yAxis: [{
-          type: 'value',
-          name: '交易量',
-          position: 'right',
-          alignTicks: true,
-
-          axisLine: {
-            show: true,
-
+            formatter: (value) => {
+              return moment(value).format("DD:HH:mm");
+            },
           },
-          axisLabel: {
-            formatter: '{value} '
-          }
         },
-        {
-          type: 'value',
-          name: '價格',
-          position: 'left',
-          alignTicks: true,
-          axisLine: {
-            show: true,
-
+        yAxis: [
+          {
+            type: "value",
+            name: "交易量",
+            position: "right",
+            alignTicks: true,
+            axisLine: {
+              show: true,
+            },
+            axisLabel: {
+              formatter: "{value} ",
+            },
           },
-          axisLabel: {
-            formatter: '{value} 元'
-          }
-        }
+          {
+            type: "value",
+            name: "價格",
+            position: "left",
+            alignTicks: true,
+            axisLine: {
+              show: true,
+            },
+            axisLabel: {
+              formatter: "{value} 元",
+            },
+          },
         ],
         grid: {
-          top: "20%"
+          top: "20%",
         },
-        color: ['#F2C94C', "#F2994A"],
+        color: ["#F2C94C", "#F2994A"],
         dataZoom: [
           {
             show: true,
             start: 0,
             end: 100,
-            height: '5%',
+            height: "5%",
           },
           {
-            type: 'inside',
+            type: "inside",
             start: 0,
-            end: 100
+            end: 100,
           },
           {
             show: false,
             yAxisIndex: 0,
-            filterMode: 'empty',
+            filterMode: "empty",
             width: 10,
-            height: '70%',
+            height: "70%",
             showDataShadow: false,
-            left: '93%'
-          }
+            left: "93%",
+          },
         ],
         series: [
           {
-            name: '交易量',
-            type: 'line',
-            data: volume
+            name: "交易量",
+            type: "line",
+            data: volume,
           },
           {
-            name: '價格',
-            type: 'line',
+            name: "價格",
+            type: "line",
             yAxisIndex: 1,
-            data: close
+            data: close,
           },
-        ]
+        ],
       };
 
       myChart.setOption(option);
-    }
-    render() {
-      return <div ref={this.eChartsRef} style={{
-        width: 480,
-        height: 300,
-        marginLeft: 10
-      }}></div>;
-    }
-  }
+
+      return () => {
+        myChart.dispose();
+      };
+    }, []);
+
+    return (
+      <div
+        ref={eChartsRef}
+        style={{
+          width: 480,
+          height: 300,
+          marginLeft: 10,
+        }}
+      ></div>
+    );
+  };
 
   return (
     <div className="info_square">
@@ -615,27 +539,8 @@ const InfoSquare = (props) => {
             <div className="info_subtitle">市場情緒</div>
             <MoodChart />
           </div>
-          <div className="info_three_topic">
-            <div className="info_subtitle">社群媒體熱門話題</div>
-            <img class="center" src={`data:image/jpeg;base64,${wordcloud}`} width={220} height={160} />
-          </div>
-          <div className="info_three_news">
-            <div className="info_subtitle">最近新聞連結</div>
-            <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'flex-start', flexDirection: 'column', height: '150px', marginLeft: '3rem' }}>
-              <div >
-                <span className="news_top">Top1</span>
-                <div className="news_url">新聞連結</div>
-              </div>
-              <div>
-                <span className="news_top">Top2</span>
-                <div className="news_url">新聞連結</div>
-              </div>
-              <div>
-                <span className="news_top">Top3</span>
-                <div className="news_url">新聞連結</div>
-              </div>
-            </div>
-          </div>
+          <WordCloud />
+          <NewsList />
         </div>
       </div>
 
@@ -643,7 +548,7 @@ const InfoSquare = (props) => {
         <button className="info_back_button" onClick={() => navigate('/Strategy')}>
           <span>重新回測</span>
         </button>
-        <button className="info_next_button" onClick={() => navigate('/Trasaction', {
+        <button className="info_next_button" onClick={() => navigate('/Transaction', {
           state: {
             exchange: exchange,
             email: email,

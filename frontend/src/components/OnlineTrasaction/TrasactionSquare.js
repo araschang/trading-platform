@@ -8,7 +8,7 @@ const TrasactionSquare = (props) => {
   const { setCurrentPage } = props;
   const navigate = useNavigate()
   const { state } = useLocation();
-  const email = state.email;
+  const email = AuthService.getCurrentUserEmail();
   const symbol = state.symbol;
   const timeframe = state.timeframe;
   const strategy = state.strategy;

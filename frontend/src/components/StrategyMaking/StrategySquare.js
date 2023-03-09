@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback, Fragment } from "react";
 import './css/StrategySquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import { Radio } from 'antd';
@@ -10,101 +10,195 @@ const StrategySquare = (props) => {
   const navigate = useNavigate()
   const { state } = useLocation();
   const [exchange] = useState('Binance');
-  const email = state.email;
+  const email = AuthService.getCurrentUserEmail();
   const [symbol] = useState('BTC/USDT');
-  const [timeframe, setTimeframe] = useState('1m');
-  const onTimeChange = (e) => {
-    setTimeframe(e.target.value);
-  };
-  const [monthValue, setMonthValue] = useState('1mon');
-  const onMonthChange = (e) => {
-    setMonthValue(e.target.value);
-  };
+  // const [timeframe, setTimeframe] = useState('1m');
+  // const onTimeChange = (e) => {
+  //   setTimeframe(e.target.value);
+  // };
+  // const [monthValue, setMonthValue] = useState('1mon');
+  // const onMonthChange = (e) => {
+  //   setMonthValue(e.target.value);
+  // };
   const [checkedStra, setCheckedStra] = useState({});
-
-  // MACD
   const [fast, setFastValue] = useState();
-  const onFastChange = (e) => {
-    setFastValue(e.target.value);
-    setCheckedStra({ ...checkedStra, ['MACD']: { "fast": fast, "slow": slow, "signal": signal } })
-  };
   const [slow, setSlowValue] = useState();
-  const onSlowChange = (e) => {
-    setSlowValue(e.target.value);
-    setCheckedStra({ ...checkedStra, ['MACD']: { "fast": fast, "slow": slow, "signal": signal } })
-  };
   const [signal, setSignalValue] = useState();
-  const onSignalChange = (e) => {
-    setSignalValue(e.target.value);
-    setCheckedStra({ ...checkedStra, ['MACD']: { "fast": fast, "slow": slow, "signal": signal } })
-  };
-  // Emotion
-  const [moodLowValue, setMoodLowValue] = useState('buy');
-  const onLowChange = (e) => {
-    setMoodLowValue(e.target.value);
-  };
-  const [moodHeightValue, setMoodHeighValue] = useState('buy');
-  const onHeightChange = (e) => {
-    setMoodHeighValue(e.target.value);
-  };
-  // EMA
   const [ema_short_len, setShortValue] = useState();
-  const onShortChange = (e) => {
-    setShortValue(e.target.value);
-    setCheckedStra({ ...checkedStra, ["EMA"]: { "ema_short_len": ema_short_len, "ema_long_len": ema_long_len } });
-  };
   const [ema_long_len, setLongValue] = useState();
-  const onLongChange = (e) => {
-    setLongValue(e.target.value);
-    setCheckedStra({ ...checkedStra, ["EMA"]: { "ema_short_len": ema_short_len, "ema_long_len": ema_long_len } });
+
+
+  const [timeframe, setTimeframe] = useState('');
+  const [monthValue, setMonthValue] = useState('');
+
+  const handleChange = (setValue) => (e) => {
+    setValue(e.target.value);
   };
 
+  const timeValues = [
+    { value: '1m', label: '1m', disabled: monthValue !== '1d' },
+    { value: '5m', label: '5m', disabled: monthValue !== '3d' },
+    { value: '1h', label: '1h', disabled: monthValue !== '1mon' },
+    { value: '4h', label: '4h', disabled: false },
+    { value: '1d', label: '1d', disabled: false },
+  ];
 
-  const handleStrategy = (e) => {
-    // e.preventDefault();
-    var checkedStrategy = [{ "MACD": checkedStra['MACD'] }, { "EMA": checkedStra['EMA'] }];
-    console.log(checkedStrategy);
-    AuthService.backtest(exchange, email, symbol, timeframe, checkedStrategy, monthValue).then(
-      (res) => {
-        // navigate("/profile");
-        // window.location.reload();
-        navigate('/Info', {
-          state: {
-            exchange: exchange,
-            email: email,
-            symbol: symbol,
-            timeframe: timeframe,
-            strategy: checkedStra,
-            backtest: res
-          }
-        });
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+  const monthValues = [
+    { value: '1d', label: '1天', disabled: false },
+    { value: '3d', label: '3天', disabled: false },
+    { value: '1mon', label: '1個月', disabled: false },
+    { value: '3mon', label: '3個月', disabled: false },
+    { value: '6mon', label: '6個月', disabled: false },
+  ];
 
-        // setLoading(false);
-        // setMessage(resMessage);
+
+  const handleCheckedStra = useCallback((name, value) => {
+    setCheckedStra(prevState => ({
+      ...prevState,
+      [name]: {
+        ...prevState[name],
+        ...value
       }
-    );
+    }));
+  }, [setCheckedStra]);
+
+  const validateInput = (name, value) => {
+    var fast_value = fast;
+    var slow_value = slow;
+    var signal_value = signal;
+    var ema_long_len_value = ema_long_len;
+    var ema_short_len_value = ema_short_len;
+
+    const valueRange = {
+      fast: [0, 100],
+      signal: [0, 200],
+      slow: [0, 100],
+      ema_short_len: [0, 200],
+      ema_long_len: [0, 200]
+    };
+
+    const alertMessage = {
+      fast: 'MACD fast should be smaller than slow',
+      slow: 'MACD fast should be smaller than slow',
+      ema_short_len: 'EMA short len should be smaller than long len',
+      ema_long_len: 'EMA short len should be smaller than long len'
+    };
+
+    if (value < valueRange[name][0] || value > valueRange[name][1]) {
+      alert(`${name} should be between ${valueRange[name][0]} and ${valueRange[name][1]}`);
+      return false;
+    }
+
+    if (alertMessage[name] && ((name === 'fast' && Number(value) >= slow_value) || (name === 'slow' && Number(value) < fast_value) || (name === 'ema_short_len' && Number(value) >= ema_long_len_value) || (name === 'ema_long_len' && Number(value) < ema_short_len_value))) {
+      alert(alertMessage[name]);
+      return false;
+    }
+
+    return true;
   };
 
+  const handleInputChange = useCallback((e) => {
 
+    const { name, value } = e.target;
+    switch (name) {
+      case 'fast':
+        handleCheckedStra('MACD', { [name]: value });
+        setFastValue(value);
+        break;
+      case 'slow':
+        handleCheckedStra('MACD', { [name]: value });
+        setSlowValue(value);
+        break;
+      case 'signal':
+        handleCheckedStra('MACD', { [name]: value });
+        setSignalValue(value);
+        break;
+      case 'ema_short_len':
+        handleCheckedStra('EMA', { [name]: value });
+        setShortValue(value);
+        break;
+      case 'ema_long_len':
+        handleCheckedStra('EMA', { [name]: value });
+        setLongValue(value);
+        break;
+      default:
+        break;
+    }
+  }, [handleCheckedStra, setFastValue, setSlowValue, setSignalValue, setShortValue, setLongValue]);
 
-  const handleCheck = (e) => {
-    // updating an object instead of a Map
-    if (e.target.name === "MACD")
-      // setCheckedStra({ ...checkedStra, [e.target.name]: { fast: fast } });
-      setCheckedStra({ ...checkedStra, [e.target.name]: { "fast": fast, "slow": slow, "signal": signal } });
+  const handleCheck = useCallback((e) => {
+    const { name, checked } = e.target;
+    switch (name) {
+      case 'MACD':
+        if (!checked) {
+          handleCheckedStra(name, { fast: '', slow: '', signal: '' });
+          setCheckedStra(prevState => {
+            const { [name]: value, ...newState } = prevState;
+            return newState;
+          });
+        } else {
+          handleCheckedStra(name, { fast, slow, signal });
+        }
+        break;
+      case 'EMA':
+        if (!checked) {
+          handleCheckedStra(name, { ema_short_len: '', ema_long_len: '' });
+          setCheckedStra(prevState => {
+            const { [name]: value, ...newState } = prevState;
+            return newState;
+          });
+        } else {
+          handleCheckedStra(name, { ema_short_len, ema_long_len });
+        }
+        break;
+      default:
+        break;
+    }
+  }, [handleCheckedStra, fast, slow, signal, ema_short_len, ema_long_len]);
 
-    if (e.target.name === "EMA")
-      // setCheckedStra({ ...checkedStra, [e.target.name]: { fast: fast } });
-      setCheckedStra({ ...checkedStra, [e.target.name]: { "ema_short_len": ema_short_len, "ema_long_len": ema_long_len } });
-  }
+  const handleStrategy = useCallback((e) => {
+    // Add input validation before submitting the form
+    let isInputValid = true;
+    for (const [key, value] of Object.entries(checkedStra)) {
+
+      for (const [sub_key, sub_value] of Object.entries(checkedStra[key])) {
+        isInputValid = validateInput(sub_key, sub_value) && isInputValid;
+      }
+    }
+
+    // e.preventDefault();
+    const checkedStrategy = Object.keys(checkedStra).map(key => ({ [key]: checkedStra[key] }));
+
+    if (isInputValid) {
+      AuthService.backtest(exchange, email, symbol, timeframe, checkedStrategy, monthValue).then(
+        (res) => {
+          navigate('/Info', {
+            state: {
+              exchange: exchange,
+              email: email,
+              symbol: symbol,
+              timeframe: timeframe,
+              strategy: checkedStra,
+              backtest: res
+            }
+          });
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+
+          // setLoading(false);
+          // setMessage(resMessage);
+        }
+      );
+    } else {
+      // Handle invalid input
+    }
+  });
 
   useEffect(() => {
     console.log("checkedItems: ", checkedStra);
@@ -116,23 +210,12 @@ const StrategySquare = (props) => {
       key: 'MACD',
       label: 'MACD',
     },
-    Emotion: {
-      name: 'Emotion',
-      key: 'Emotion',
-      label: 'Emotion',
-    },
     EMA: {
       name: 'EMA',
       key: 'EMA',
       label: 'EMA',
     }
   };
-
-
-
-
-
-
 
   return (
     <div className="square">
@@ -166,16 +249,22 @@ const StrategySquare = (props) => {
             </div>
             {/* radio */}
             <div className="str_input_items macd" style={{ width: '300px', flexDirection: 'row', display: 'flex', marginLeft: '3rem', marginBottom: '1rem' }}>
-              <input type="radio" class="str_radio_input" id='radioTime1' value='1m' onChange={onTimeChange} name='timeValue' checked={timeframe === "1m"} />
-              <label class="str_radio_label" for="radioTime1"></label><small >1m</small>
-              <input type="radio" class="str_radio_input" id='radioTime2' value='5m' onChange={onTimeChange} name='timeValue' checked={timeframe === "5m"} />
-              <label class="str_radio_label" for="radioTime2"></label><small >5m</small>
-              <input type="radio" class="str_radio_input" id='radioTime3' value='1h' onChange={onTimeChange} name='timeValue' checked={timeframe === "1h"} />
-              <label class="str_radio_label" for="radioTime3"></label><small >1h</small>
-              <input type="radio" class="str_radio_input" id='radioTime4' value='4h' onChange={onTimeChange} name='timeValue' checked={timeframe === "4h"} />
-              <label class="str_radio_label" for="radioTime4"></label><small >4h</small>
-              <input type="radio" class="str_radio_input" id='radioTime5' value='1d' onChange={onTimeChange} name='timeValue' checked={timeframe === "1d"} />
-              <label class="str_radio_label" for="radioTime5"></label><small >1d</small>
+              {timeValues.map((value) => (
+                <Fragment key={value.value}>
+                  <input
+                    type="radio"
+                    className="str_radio_input"
+                    id={`radioTime${value.value}`}
+                    value={value.value}
+                    onChange={handleChange(setTimeframe)}
+                    name="timeValue"
+                    checked={timeframe === value.value}
+                    disabled={value.disabled}
+                  />
+                  <label className="str_radio_label" htmlFor={`radioTime${value.value}`} />
+                  <small>{value.label}</small>
+                </Fragment>
+              ))}
             </div>
           </div>
         </div>
@@ -197,13 +286,23 @@ const StrategySquare = (props) => {
               <span className="str_title_text_ps">備註：歷史資訊回測時間的範圍</span>
             </div >
             {/* radio */}
-            <div className="str_input_items macd" style={{ width: '200px', flexDirection: 'row', display: 'flex', marginLeft: '4rem', marginBottom: '1rem' }}>
-              <input type="radio" class="str_radio_input" id='radioMonth1' value='1mon' onChange={onMonthChange} name='monthValue' checked={monthValue === "1mon"} />
-              <label class="str_radio_label" for="radioMonth1"></label><small >1個月</small>
-              <input type="radio" class="str_radio_input" id='radioMonth2' value='3mon' onChange={onMonthChange} name='monthValue' checked={monthValue === "3mon"} />
-              <label class="str_radio_label" for="radioMonth2"></label><small >3個月</small>
-              <input type="radio" class="str_radio_input" id='radioMonth3' value='6mon' onChange={onMonthChange} name='monthValue' checked={monthValue === "6mon"} />
-              <label class="str_radio_label" for="radioMonth3"></label><small >6個月</small>
+            <div className="str_input_items macd" style={{ width: '300px', flexDirection: 'row', display: 'flex', marginLeft: '4rem', marginBottom: '1rem' }}>
+              {monthValues.map((value) => (
+                <Fragment key={value.value}>
+                  <input
+                    type="radio"
+                    className="str_radio_input"
+                    id={`radioMonth${value.value}`}
+                    value={value.value}
+                    onChange={handleChange(setMonthValue)}
+                    name="monthValue"
+                    checked={monthValue === value.value}
+                    disabled={value.disabled}
+                  />
+                  <label className="str_radio_label" htmlFor={`radioMonth${value.value}`} />
+                  <small>{value.label}</small>
+                </Fragment>
+              ))}
             </div>
           </div>
         </div>
@@ -243,15 +342,15 @@ const StrategySquare = (props) => {
             <div className="str_input">
               <div className="str_input_items macd">
                 <span className="str_input_text">快線長度：</span>
-                <input type="value" className="str_input_square macd" value={fast} onChange={onFastChange}></input>
+                <input type="value" name='fast' className="str_input_square macd" value={fast} onChange={handleInputChange}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">慢線長度：</span>
-                <input type="value" className="str_input_square macd" value={slow} onChange={onSlowChange}></input>
+                <input type="value" name='slow' className="str_input_square macd" value={slow} onChange={handleInputChange}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">訊號長度：</span>
-                <input type="value" className="str_input_square macd" value={signal} onChange={onSignalChange}></input>
+                <input type="value" name='signal' className="str_input_square macd" value={signal} onChange={handleInputChange}></input>
               </div>
             </div>
           </div>
@@ -277,11 +376,11 @@ const StrategySquare = (props) => {
             <div className="str_input">
               <div className="str_input_items macd">
                 <span className="str_input_text">短線：</span>
-                <input type="value" className="str_input_square" value={ema_short_len} onChange={onShortChange}></input>
+                <input type="value" name='ema_short_len' className="str_input_square" value={ema_short_len} onChange={handleInputChange}></input>
               </div>
               <div className="str_input_items macd">
                 <span className="str_input_text">長線：</span>
-                <input type="value" className="str_input_square" value={ema_long_len} onChange={onLongChange}></input>
+                <input type="value" name='ema_long_len' className="str_input_square" value={ema_long_len} onChange={handleInputChange}></input>
               </div>
             </div>
           </div>
@@ -296,7 +395,6 @@ const StrategySquare = (props) => {
 
 
   );
-
 };
 
 export default StrategySquare;

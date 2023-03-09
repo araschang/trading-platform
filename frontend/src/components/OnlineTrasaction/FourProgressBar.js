@@ -33,7 +33,7 @@ const MultiStepProgressBar = ({ page, onPageNumberClick }) => {
         {({ accomplished, index }) => (
           <div
             className={`indexedStep ${accomplished ? 'accomplished' : null}`}
-            onClick={() => navigate('/Info')}
+          // onClick={() => navigate('/Info')}
           >
             資訊<br />一覽
           </div>

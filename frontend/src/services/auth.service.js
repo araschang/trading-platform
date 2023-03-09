@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://127.0.0.1:5000/";
+const API_URL = "https://cat-jessie-vm.iottalktw.com/api/";
 
 const register = (email, password) => {
     return axios.post(API_URL + "membership", {
@@ -16,13 +16,16 @@ const login = (email, password) => {
             password: password
         })
         .then((response) => {
-            console.log(response);
-            if (response.data.account) {
-                localStorage.setItem("user", JSON.stringify(response.data));
+            if (response.data == 200) {
+                localStorage.setItem("user", JSON.stringify({ email }));
             }
-
             return response.data;
         });
+};
+
+const getCurrentUserEmail = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user ? user.email : null;
 };
 
 const logout = () => {
@@ -64,7 +67,7 @@ const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) 
 
 const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy) => {
     return axios
-        .post(API_URL + "trade", {
+        .post(API_URL + "trade/" + email, {
             email: email,
             exchange: exchange,
             api_key: api_key,
@@ -117,6 +120,7 @@ const wordCloudGet = () => {
 
 const AuthService = {
     register,
+    getCurrentUserEmail,
     login,
     logout,
     getCurrentUser,

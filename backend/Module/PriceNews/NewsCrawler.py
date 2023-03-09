@@ -5,6 +5,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import platform
 import json
+import os
 
 def get_news():
     options = Options()
@@ -51,7 +52,7 @@ def get_news():
 
     news[titile[0]] = links[0]
 
-    path = './backend/Module/PriceNews/result.json'
+    path = os.path.join(os.path.dirname(__file__), 'result.json')
     with open(path, 'w') as fp:
         json.dump(news, fp)
     return news

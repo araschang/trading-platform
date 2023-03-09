@@ -41,10 +41,17 @@
 }
 
 input:checked+.str_radio_label {
-    /* 當check時 按鈕顏色改變 */
+    /* 當checked時 按鈕顏色改變 */
     background-color: #667AF5;
 }
-
+input:disabled+.str_radio_label {
+    /* 當disabled時 按鈕顏色改變 */
+    border: 2px solid #e8e8e8;
+   box-shadow: 0px 0px 0px 3px #e8e8e8 inset;
+}
+.str_radio_label:disabled{
+    background-color: #a9a9a9;
+}
 .str_radio_input:checked+.str_radio_label::before {
     /* 當check時 打勾消失 */
     opacity: 1;

@@ -51,6 +51,27 @@ const StrategySquare = (props) => {
     { value: '6mon', label: '6個月', disabled: false },
   ];
 
+  function checkUserInput() {
+    const selectedMonthValue = monthValues.find((value) => value.value === monthValue);
+    const selectedTimeValue = timeValues.find((value) => value.value === timeframe);
+
+    if (!selectedMonthValue || !selectedTimeValue) {
+      alert('請選擇一個 Time Frame 和設定回測時間');
+      return false;
+    }
+
+    return true;
+  }
+
+  function checkStraInput() {
+    const checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
+    if (checkedBoxes.length === 0) {
+      alert('請至少選擇一個策略');
+      return false;
+    }
+    return true;
+  }
+
 
   const handleCheckedStra = useCallback((name, value) => {
     setCheckedStra(prevState => ({
@@ -78,14 +99,14 @@ const StrategySquare = (props) => {
     };
 
     const alertMessage = {
-      fast: 'MACD fast should be smaller than slow',
-      slow: 'MACD fast should be smaller than slow',
-      ema_short_len: 'EMA short len should be smaller than long len',
-      ema_long_len: 'EMA short len should be smaller than long len'
+      fast: 'MACD 快線長度需「小於」慢線長度',
+      slow: 'MACD 快線長度需「小於」慢線長度',
+      ema_short_len: 'EMA 短線長度需「小於」長線長度',
+      ema_long_len: 'EMA 短線長度需「小於」長線長度'
     };
 
     if (value < valueRange[name][0] || value > valueRange[name][1]) {
-      alert(`${name} should be between ${valueRange[name][0]} and ${valueRange[name][1]}`);
+      alert(`${name} 應介於 ${valueRange[name][0]} 到 ${valueRange[name][1]}`);
       return false;
     }
 
@@ -160,16 +181,18 @@ const StrategySquare = (props) => {
     // Add input validation before submitting the form
     let isInputValid = true;
     for (const [key, value] of Object.entries(checkedStra)) {
-
       for (const [sub_key, sub_value] of Object.entries(checkedStra[key])) {
         isInputValid = validateInput(sub_key, sub_value) && isInputValid;
       }
     }
 
+    const isRadioValid = checkUserInput();
+    const isStraValid = checkStraInput();
+
     // e.preventDefault();
     const checkedStrategy = Object.keys(checkedStra).map(key => ({ [key]: checkedStra[key] }));
 
-    if (isInputValid) {
+    if (isInputValid && isRadioValid && checkStraInput) {
       AuthService.backtest(exchange, email, symbol, timeframe, checkedStrategy, monthValue).then(
         (res) => {
           navigate('/Info', {
@@ -217,6 +240,7 @@ const StrategySquare = (props) => {
     }
   };
 
+
   return (
     <div className="square">
 
@@ -224,16 +248,16 @@ const StrategySquare = (props) => {
       <div className="square_first"
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'space-around',
           alignItems: 'center',
           flexDirection: 'row',
           flexWrap: 'nowrap',
-          width: '900px'
+          width: '700px'
         }}>
         <div className="square_item" style={{ width: '430px', height: '150px' }}>  {/* time frame */}
           <div className="right"
             style={{
-              width: '450px',
+              width: '300px',
               height: '130px',
               display: 'flex',
               justifyContent: 'space-evenly',
@@ -248,7 +272,7 @@ const StrategySquare = (props) => {
               <span className="str_title_text_ps">備註：K線的時間間隔，越小訊號越多</span>
             </div>
             {/* radio */}
-            <div className="str_input_items macd" style={{ width: '300px', flexDirection: 'row', display: 'flex', marginLeft: '3rem', marginBottom: '1rem' }}>
+            <div className="str_input_items macd" style={{ paddingLeft: '0px', width: '250px', flexDirection: 'row', display: 'flex', marginLeft: '2rem', marginBottom: '1rem' }}>
               {timeValues.map((value) => (
                 <Fragment key={value.value}>
                   <input
@@ -271,7 +295,7 @@ const StrategySquare = (props) => {
         <div className="square_item" style={{ width: '430px', height: '150px' }}>  {/* 回測 */}
           <div className="right"
             style={{
-              width: '450px',
+              width: '350px',
               height: '130px',
               display: 'flex',
               justifyContent: 'space-evenly',
@@ -286,7 +310,7 @@ const StrategySquare = (props) => {
               <span className="str_title_text_ps">備註：歷史資訊回測時間的範圍</span>
             </div >
             {/* radio */}
-            <div className="str_input_items macd" style={{ width: '300px', flexDirection: 'row', display: 'flex', marginLeft: '4rem', marginBottom: '1rem' }}>
+            <div className="str_input_items macd" style={{ paddingLeft: '0px', width: '350px', flexDirection: 'row', display: 'flex', marginLeft: '2rem', marginBottom: '1rem' }}>
               {monthValues.map((value) => (
                 <Fragment key={value.value}>
                   <input
@@ -308,8 +332,8 @@ const StrategySquare = (props) => {
         </div>
       </div>
       {/* 一和二之間的文字 */}
-      <div style={{ width: '900px', border: '0.5px solid #C6CACC' }}></div>
-      <div style={{ width: '900px', }}>請選擇策略(至少選擇一項)：</div>
+      <div style={{ width: '600px', border: '0.5px solid #C6CACC' }}></div>
+      <div style={{ width: '650px', }}>請選擇策略：</div>
       {/* 第二行 */}
       <div className="square_second"
         style={{
@@ -318,11 +342,11 @@ const StrategySquare = (props) => {
           alignItems: 'center',
           flexDirection: 'row',
           flexWrap: 'nowrap',
-          width: '900px',
+          width: '700px',
           height: '240px',
           gap: '10px'
         }}>
-        <div className="square_item">  {/* MACD */}
+        <div className="square_item" style={{ marginLeft: '1rem' }}>  {/* MACD */}
           <input type='checkbox' class="str_checkbox" id='checkbox1' name={strategyMethods['MACD'].name} checked={checkedStra[strategyMethods['MACD'].name]} onChange={handleCheck} />
           <label class="str_label" for="checkbox1"></label>
           <div className="right"
@@ -356,7 +380,7 @@ const StrategySquare = (props) => {
           </div>
         </div>
 
-        <div className="square_item"> {/* EMA */}
+        <div className="square_item" style={{ width: '280px' }}> {/* EMA */}
           <input type='checkbox' class="str_checkbox" id='checkbox3' name={strategyMethods['EMA'].name} checked={checkedStra[strategyMethods['EMA'].name]} onChange={handleCheck} />
           <label class="str_label" for="checkbox3"></label>
           <div className="right"
@@ -387,9 +411,12 @@ const StrategySquare = (props) => {
 
         </div>
       </div>
-      <button className="next_button " onClick={() => handleStrategy()}>
-        <span >一鍵生成</span>
-      </button>
+      {/* 第三行 */}
+      <div style={{ width: '700px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <button className="next_button " onClick={() => handleStrategy()}>
+          <span >一鍵生成</span>
+        </button>
+      </div>
     </div>
 
 

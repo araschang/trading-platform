@@ -113,11 +113,13 @@ const TrasactionSquare = (props) => {
           </div>
           <div className="Tra_left_two">
             <span className="Tra_title_text">EMA指標</span>
+            <div className="Tra_title_text_position"  style={{height:'80px'}}>
             {("EMA" in strategy) &&
-              (<span className="Tra_title_text_info_position" ><span>短線：</span><span className="Tra_title_text_info">{strategy['EMA']['ema_short_len']}</span></span>)}
+              (<span className="Tra_title_text_info_position" ><span>短線：</span><span className="Tra_title_text_info_two">{strategy['EMA']['ema_short_len']}</span></span>)}
             {("EMA" in strategy) &&
-              (<span className="Tra_title_text_info_position" ><span>長線：</span><span className="Tra_title_text_info">{strategy['EMA']['ema_long_len']}</span></span>)}
+              (<span className="Tra_title_text_info_position" ><span>長線：</span><span className="Tra_title_text_info_two">{strategy['EMA']['ema_long_len']}</span></span>)}
             {!("EMA" in strategy) && (<span className="Tra_title_text_info">未選取</span>)}
+            </div>
           </div>
 
         </div>
@@ -158,7 +160,7 @@ const TrasactionSquare = (props) => {
 
 
       </div >
-
+<div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
       <div className="button_group" >
         <button className="Tra_back_button" onClick={handleBackInfo}>
           <span>資訊一覽</span>
@@ -166,7 +168,7 @@ const TrasactionSquare = (props) => {
         <button className="Tra_next_button" onClick={handleTranscation}>
           <span>確認交易</span>
         </button>
-      </div>
+      </div></div>
     </ div>
   );
 

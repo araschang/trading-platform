@@ -116,10 +116,8 @@ const InfoSquare = (props) => {
       <div className="info_three_topic">
         <div className="info_subtitle">社群媒體熱門話題</div>
         <img
-          className="center"
           src={`data:image/jpeg;base64,${wordcloud}`}
-          width={220}
-          height={160}
+          style={{bottom:'17%',height:'220px',width:'350px',position:'absolute',clip:'rect(40px,290px,170px,30px)'}}
         />
       </div>
     );
@@ -159,7 +157,7 @@ const InfoSquare = (props) => {
             alignItems: "flex-start",
             flexDirection: "column",
             height: "150px",
-            marginLeft: "3rem",
+            marginLeft: "1rem",
           }}
         >
           {Object.keys(news).map((title, index) => (
@@ -400,6 +398,11 @@ const InfoSquare = (props) => {
               return moment(value).format("DD:HH:mm");
             },
           },
+          nameTextStyle:{
+            width:'1em',
+            overflow:'truncate',
+            fontSize:10
+          }
         },
         yAxis: [
           {
@@ -429,6 +432,9 @@ const InfoSquare = (props) => {
         ],
         grid: {
           top: "20%",
+          containLabel:true,
+          right:'5%',
+          left:'2%'
         },
         color: ["#F2C94C", "#F2994A"],
         dataZoom: [
@@ -479,7 +485,7 @@ const InfoSquare = (props) => {
       <div
         ref={eChartsRef}
         style={{
-          width: 480,
+          width: 530,
           height: 300,
           marginLeft: 10,
         }}
@@ -539,11 +545,11 @@ const InfoSquare = (props) => {
             <div className="info_subtitle">市場情緒</div>
             <MoodChart />
           </div>
-          <WordCloud />
+          <WordCloud  />
           <NewsList />
         </div>
       </div>
-
+<div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
       <div className="button_group" >
         <button className="info_back_button" onClick={() => navigate('/Strategy')}>
           <span>重新回測</span>
@@ -561,7 +567,7 @@ const InfoSquare = (props) => {
           <span>前往交易</span>
         </button>
       </div>
-
+</div>
 
 
     </div >

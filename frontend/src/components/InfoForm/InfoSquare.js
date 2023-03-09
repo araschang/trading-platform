@@ -11,6 +11,7 @@ const InfoSquare = (props) => {
 
   const navigate = useNavigate()
   const { state } = useLocation();
+  console.log(state.exchange);
   const email = AuthService.getCurrentUserEmail();
   const exchange = state.exchange;
   const symbol = state.symbol;
@@ -52,50 +53,51 @@ const InfoSquare = (props) => {
     volume.push([tempDate, item.volume]);
   });
 
-  useEffect(() => {
-    console.log('useEffect run ');
-    AuthService.backtestGet(email).then(
-      (res) => {
-        console.log(res[res.length - 1]);
-        res = res[res.length - 1];
-        if (typeof res.cagr === 'number') {
-          res.cagr = res.cagr.toFixed(2);
-        }
-        if (typeof res.max_drawdown === 'number') {
-          res.max_drawdown = (res.max_drawdown * 100).toFixed(2);
-        }
-        if (typeof res.volatility === 'number') {
-          res.volatility = (res.volatility * 100).toFixed(2);
-        }
-        if (typeof res.sharpe_ratio === 'number') {
-          res.sharpe_ratio = res.sharpe_ratio.toFixed(2);
-        }
-        if (typeof res.win_rate === 'number') {
-          res.win_rate = (res.win_rate * 100).toFixed(2);
-        }
-
-        setCAGRValue(res.cagr);
-        setMAXDValue(res.max_drawdown);
-        setVOLValue(res.volatility);
-        setSHARPElValue(res.sharpe_ratio);
-        setWINValue(res.win_rate);
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
+  // useEffect(() => {
+  //   console.log('useEffect run ');
+  AuthService.backtestGet(email).then(
+    (res) => {
+      console.log(res[res.length - 1]);
+      res = res[res.length - 1];
+      if (typeof res.cagr === 'number') {
+        res.cagr = res.cagr.toFixed(2);
       }
-    );
-  }, []);
+      if (typeof res.max_drawdown === 'number') {
+        res.max_drawdown = (res.max_drawdown * 100).toFixed(2);
+      }
+      if (typeof res.volatility === 'number') {
+        res.volatility = (res.volatility * 100).toFixed(2);
+      }
+      if (typeof res.sharpe_ratio === 'number') {
+        res.sharpe_ratio = res.sharpe_ratio.toFixed(2);
+      }
+      if (typeof res.win_rate === 'number') {
+        res.win_rate = (res.win_rate * 100).toFixed(2);
+      }
+
+      setCAGRValue(res.cagr);
+      setMAXDValue(res.max_drawdown);
+      setVOLValue(res.volatility);
+      setSHARPElValue(res.sharpe_ratio);
+      setWINValue(res.win_rate);
+    },
+    (error) => {
+      const resMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+    }
+  );
+  // }, []);
 
 
   function WordCloud() {
     const [wordcloud, setCloud] = useState("");
 
     useEffect(() => {
+      console.log('useEffect word cloud run ');
       AuthService.wordCloudGet().then(
         (res) => {
           setCloud(res);
@@ -117,7 +119,7 @@ const InfoSquare = (props) => {
         <div className="info_subtitle">社群媒體熱門話題</div>
         <img
           src={`data:image/jpeg;base64,${wordcloud}`}
-          style={{bottom:'17%',height:'220px',width:'350px',position:'absolute',clip:'rect(40px,290px,170px,30px)'}}
+          style={{ bottom: '17%', height: '220px', width: '350px', position: 'absolute', clip: 'rect(40px,290px,170px,30px)' }}
         />
       </div>
     );
@@ -125,7 +127,7 @@ const InfoSquare = (props) => {
 
   function NewsList() {
     const [news, setNews] = useState([]);
-
+    console.log('useEffect news run ');
     useEffect(() => {
       AuthService.crawlGet().then(
         (res) => {
@@ -178,6 +180,7 @@ const InfoSquare = (props) => {
     const [sentiment, setSentiment] = useState(0);
 
     useEffect(() => {
+      console.log('useEffect sentiment run ');
       AuthService.sentimentGet().then(
         (res) => {
           if (typeof res === 'number') {
@@ -398,10 +401,10 @@ const InfoSquare = (props) => {
               return moment(value).format("DD:HH:mm");
             },
           },
-          nameTextStyle:{
-            width:'1em',
-            overflow:'truncate',
-            fontSize:10
+          nameTextStyle: {
+            width: '1em',
+            overflow: 'truncate',
+            fontSize: 10
           }
         },
         yAxis: [
@@ -432,9 +435,9 @@ const InfoSquare = (props) => {
         ],
         grid: {
           top: "20%",
-          containLabel:true,
-          right:'5%',
-          left:'2%'
+          containLabel: true,
+          right: '5%',
+          left: '2%'
         },
         color: ["#F2C94C", "#F2994A"],
         dataZoom: [
@@ -545,29 +548,29 @@ const InfoSquare = (props) => {
             <div className="info_subtitle">市場情緒</div>
             <MoodChart />
           </div>
-          <WordCloud  />
+          <WordCloud />
           <NewsList />
         </div>
       </div>
-<div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-      <div className="button_group" >
-        <button className="info_back_button" onClick={() => navigate('/Strategy')}>
-          <span>重新回測</span>
-        </button>
-        <button className="info_next_button" onClick={() => navigate('/Transaction', {
-          state: {
-            exchange: exchange,
-            email: email,
-            symbol: symbol,
-            timeframe: timeframe,
-            strategy: strategy,
-            backtest: state.backtest
-          }
-        })}>
-          <span>前往交易</span>
-        </button>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="button_group" >
+          <button className="info_back_button" onClick={() => navigate('/Strategy')}>
+            <span>重新回測</span>
+          </button>
+          <button className="info_next_button" onClick={() => navigate('/Transaction', {
+            state: {
+              exchange: exchange,
+              email: email,
+              symbol: symbol,
+              timeframe: timeframe,
+              strategy: strategy,
+              backtest: state.backtest
+            }
+          })}>
+            <span>前往交易</span>
+          </button>
+        </div>
       </div>
-</div>
 
 
     </div >

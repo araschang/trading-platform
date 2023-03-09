@@ -44,12 +44,15 @@ const StrategySquare = (props) => {
   ];
 
   const monthValues = [
-    { value: '1d', label: '1天', disabled: false },
-    { value: '3d', label: '3天', disabled: false },
-    { value: '1mon', label: '1個月', disabled: false },
-    { value: '3mon', label: '3個月', disabled: false },
-    { value: '6mon', label: '6個月', disabled: false },
+    { value: '1d', label: '1天', disabled: timeframe === '5m' || timeframe === '1h' },
+    { value: '3d', label: '3天', disabled: timeframe === '1m' || timeframe === '1h' },
+    { value: '1mon', label: '1個月', disabled: timeframe === '1m' || timeframe === '5m' },
+    { value: '3mon', label: '3個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1h' },
+    { value: '6mon', label: '6個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1h' },
   ];
+
+
+
 
   function checkUserInput() {
     const selectedMonthValue = monthValues.find((value) => value.value === monthValue);
@@ -225,7 +228,8 @@ const StrategySquare = (props) => {
 
   useEffect(() => {
     console.log("checkedItems: ", checkedStra);
-  }, [checkedStra]);
+
+  }, [checkedStra, timeValues, monthValues]);
 
   const strategyMethods = {
     MACD: {

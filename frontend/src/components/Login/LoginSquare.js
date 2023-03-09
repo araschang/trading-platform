@@ -39,20 +39,16 @@ const LoginSquare = (props) => {
     AuthService.register(email, password).then(
       (res) => {
         console.log(res['data']);
-        setMessage(res['data']);
-        if (res === 200) {
+        // setMessage(res['data']);
+        if (res['data'] === 200) {
           window.location.reload();
         }
-        if (res === 401) {
+        if (res['data'] === 401) {
           setMessage("Member Already Exist");
         }
-        if (res === 402) {
+        if (res['data'] === 402) {
           setMessage("Member not Exist");
         }
-        if (res === 402) {
-          setMessage("Wrong Password");
-        }
-
       },
       (error) => {
         const resMessage =

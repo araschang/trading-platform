@@ -1,23 +1,34 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import platform
+import os
+
 def get_price():
     '''
     This function would append the latest date and the latest price 
     to "./price_data.csv".
     '''
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.chrome.options import Options
-    import platform
+    
 
     options = Options()
-    options.add_argument("--disable-notifications")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
+    
 
     current_system = platform.system()
     if current_system == 'Linux':
-        chrome_path = './chromedriver_linux64/chromedriver'
+        chrome_path = '/usr/lib/chromium-browser/chromedriver'
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--remote-debugging-port=9222")
+        options.add_argument("--start-maximized")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        options.add_argument('--headless')
     elif current_system == 'Darwin':
         chrome_path = './chromedriver_mac_arm64/chromedriver'
+        options.add_argument("--disable-notifications")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("useAutomationExtension", False)
     driver = webdriver.Chrome(chrome_path, chrome_options=options)
     path = "https://www.investing.com/indices/crypto-volatility-index-historical-data"
     driver.get(path)
@@ -36,8 +47,8 @@ def get_price():
         elif d2[2] == d1[2] and d2[0] == d1[0] and d2[1] < d1[1]:
             return True
         return False
-
-    with open("./price_data.csv", 'r+') as file:
+    data_path = os.path.join(os.path.dirname(__file__), 'price_data.csv')
+    with open(data_path, 'r+') as file:
         lines = file.readlines()
         latest = lines[-1]
         latest_date, latest_price = latest.split(',')

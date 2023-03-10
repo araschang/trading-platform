@@ -198,6 +198,7 @@ const InfoSquare = (props) => {
     );
   }
 
+
   const MoodChart = () => {
     const eChartsRef = useRef(null);
     const [sentiment, setSentiment] = useState(0);

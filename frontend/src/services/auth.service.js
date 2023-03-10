@@ -67,7 +67,11 @@ const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) 
 
 const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy) => {
     return axios
+<<<<<<< HEAD
         .post(API_URL + "trade/" + email, {
+=======
+        .post(API_URL + "backtest", {
+>>>>>>> main
             email: email,
             exchange: exchange,
             api_key: api_key,
@@ -79,11 +83,16 @@ const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, m
             strategy: strategy
         })
         .then((response) => {
+<<<<<<< HEAD
+=======
+            console.log(response);
+>>>>>>> main
             return response.data;
         });
 };
 
 
+<<<<<<< HEAD
 const backtestGet = (email) => {
     return axios
         .get(API_URL + "backtest/" + email)
@@ -112,12 +121,24 @@ const wordCloudGet = () => {
     return axios
         .get(API_URL + "wordcloud")
         .then((response) => {
+=======
+const tradeGet = (email) => {
+    return axios
+        .get(API_URL + "backtest", {
+            email: email,
+        })
+        .then((response) => {
+            console.log(response);
+>>>>>>> main
             return response.data;
         });
 };
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 const AuthService = {
     register,
     getCurrentUserEmail,
@@ -126,10 +147,14 @@ const AuthService = {
     getCurrentUser,
     backtest,
     tradeImply,
+<<<<<<< HEAD
     backtestGet,
     sentimentGet,
     crawlGet,
     wordCloudGet
+=======
+    tradeGet
+>>>>>>> main
 }
 
 export default AuthService;

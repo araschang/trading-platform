@@ -35,6 +35,7 @@ const StrategySquare = (props) => {
     { value: '1d', label: '1d', disabled: false },
   ];
 
+<<<<<<< HEAD
   const monthValues = [
     { value: '1d', label: '1天', disabled: timeframe === '5m' || timeframe === '1h' },
     { value: '3d', label: '3天', disabled: timeframe === '1m' || timeframe === '1h' },
@@ -42,6 +43,51 @@ const StrategySquare = (props) => {
     { value: '3mon', label: '3個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1h' },
     { value: '6mon', label: '6個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1h' },
   ];
+=======
+  const handleStrategy = (e) => {
+    // e.preventDefault();
+    console.log(checkedStra);
+    navigate('/Info', {
+      state: {
+        exchange: exchange,
+        email: email,
+        symbol: symbol,
+        strategy: checkedStra,
+      }
+    });
+    // AuthService.backtest(exchange, email, symbol, timeframe, checkedStra, monthValue).then(
+    //   (res) => {
+    //     // navigate("/profile");
+    //     // window.location.reload();
+    //     // console.log(email, password);
+    //     // console.log(res);
+
+    //     navigate('/Choose', {
+    //       state: {
+    //         exchange: exchange,
+    //         email: email,
+    //         symbol: symbol,
+    //         strategy: checkedStra,
+    //       }
+    //     });
+    //     // else {
+    //     //   window.location.reload();
+    //     // }
+    //   },
+    //   (error) => {
+    //     const resMessage =
+    //       (error.response &&
+    //         error.response.data &&
+    //         error.response.data.message) ||
+    //       error.message ||
+    //       error.toString();
+
+    //     // setLoading(false);
+    //     // setMessage(resMessage);
+    //   }
+    // );
+  };
+>>>>>>> main
 
 
 

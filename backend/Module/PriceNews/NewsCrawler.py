@@ -58,5 +58,6 @@ def get_news():
     return news
 
 if __name__ == '__main__':
-    news = get_news()
-    print(news)
+    # news = get_news()
+    # print(news)
+    print(os.path.join(os.path.dirname(__file__), 'result.json'))

@@ -2,7 +2,7 @@
     color: rgb(190, 190, 190);
     width: 50px;
     height: 50px;
-    font-size: 12px;
+    font-size: 14px;
     background-color: rgb(255, 255, 255);
     border-radius: 50%;
     border-style: solid;
@@ -14,7 +14,7 @@
     cursor: pointer;
 }
 
-.indexedStep.accomplished{
+.indexedStep.accomplished {
     background-color: #677BF6;
     color: white;
     border-style: none;
@@ -67,7 +67,7 @@
 }
 
 @media screen and (max-width: 480px) {
-    .indexedStep{
+    .indexedStep {
         width: 15px;
         height: 15px;
         font-size: 6px;

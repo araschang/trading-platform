@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import './css/TrasactionSquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
-import { Radio } from 'antd';
 import AuthService from "../../services/auth.service";
 
 const TrasactionSquare = (props) => {
-  const { setCurrentPage } = props;
   const navigate = useNavigate()
+  const { setCurrentPage } = props;
   const { state } = useLocation();
   const email = AuthService.getCurrentUserEmail();
   const symbol = state.symbol;
@@ -18,7 +17,6 @@ const TrasactionSquare = (props) => {
 
   const [value, setValue] = useState('money');
   const onChange = (e) => {
-    console.log('radio checked', e.target.value);
     setValue(e.target.value);
   };
 
@@ -62,14 +60,6 @@ const TrasactionSquare = (props) => {
           });
         }
 
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
       }
     );
   };
@@ -113,12 +103,12 @@ const TrasactionSquare = (props) => {
           </div>
           <div className="Tra_left_two">
             <span className="Tra_title_text">EMA指標</span>
-            <div className="Tra_title_text_position"  style={{height:'80px'}}>
-            {("EMA" in strategy) &&
-              (<span className="Tra_title_text_info_position" ><span>短線：</span><span className="Tra_title_text_info_two">{strategy['EMA']['ema_short_len']}</span></span>)}
-            {("EMA" in strategy) &&
-              (<span className="Tra_title_text_info_position" ><span>長線：</span><span className="Tra_title_text_info_two">{strategy['EMA']['ema_long_len']}</span></span>)}
-            {!("EMA" in strategy) && (<span className="Tra_title_text_info">未選取</span>)}
+            <div className="Tra_title_text_position" style={{ height: '80px' }}>
+              {("EMA" in strategy) &&
+                (<span className="Tra_title_text_info_position" ><span>短線：</span><span className="Tra_title_text_info_two">{strategy['EMA']['ema_short_len']}</span></span>)}
+              {("EMA" in strategy) &&
+                (<span className="Tra_title_text_info_position" ><span>長線：</span><span className="Tra_title_text_info_two">{strategy['EMA']['ema_long_len']}</span></span>)}
+              {!("EMA" in strategy) && (<span className="Tra_title_text_info">未選取</span>)}
             </div>
           </div>
 
@@ -160,15 +150,15 @@ const TrasactionSquare = (props) => {
 
 
       </div >
-<div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
-      <div className="button_group" >
-        <button className="Tra_back_button" onClick={handleBackInfo}>
-          <span>資訊一覽</span>
-        </button>
-        <button className="Tra_next_button" onClick={handleTranscation}>
-          <span>確認交易</span>
-        </button>
-      </div></div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="button_group" >
+          <button className="Tra_back_button" onClick={handleBackInfo}>
+            <span>資訊一覽</span>
+          </button>
+          <button className="Tra_next_button" onClick={handleTranscation}>
+            <span>確認交易</span>
+          </button>
+        </div></div>
     </ div>
   );
 

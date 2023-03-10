@@ -198,7 +198,8 @@ const StrategySquare = (props) => {
 
     // e.preventDefault();
     const checkedStrategy = Object.keys(checkedStra).map(key => ({ [key]: checkedStra[key] }));
-
+    console.log(checkedStrategy);
+    console.log(typeof checkedStrategy);
     if (isInputValid && isRadioValid && checkStraInput) {
       AuthService.backtest(exchange, email, symbol, timeframe, checkedStrategy, monthValue).then(
         (res) => {

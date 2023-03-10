@@ -23,14 +23,14 @@ const InfoSquare = (props) => {
   const [isSentiMounted, setSentiMounted] = useState(true);
   const [isCloudMounted, setCloudMounted] = useState(true);
   const time = [];
-  const cum_ret = [];
+  const cum_ret_format = [];
   const close = [];
   const volume = [];
 
   backtest.forEach((item) => {
     const tempDate = new Date(item.time).toISOString();
     time.push(tempDate);
-    cum_ret.push([tempDate, item.cum_ret]);
+    cum_ret_format.push([tempDate, item.cum_ret_format]);
     close.push([tempDate, item.close]);
     volume.push([tempDate, item.volume]);
   });
@@ -376,7 +376,7 @@ const InfoSquare = (props) => {
         color: '#677BF6',
         series: [
           {
-            data: cum_ret,
+            data: cum_ret_format,
             type: 'line'
           }
         ]

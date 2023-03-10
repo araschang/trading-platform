@@ -18,6 +18,24 @@ const InfoSquare = (props) => {
   const strategy = state.strategy;
   const timeframe = state.timeframe;
   const backtest = JSON.parse(state.backtest);
+
+  const [isNewsMounted, setNewsMounted] = useState(true);
+  const [isSentiMounted, setSentiMounted] = useState(true);
+  const [isCloudMounted, setCloudMounted] = useState(true);
+  const time = [];
+  const cum_ret = [];
+  const close = [];
+  const volume = [];
+
+  backtest.forEach((item) => {
+    const tempDate = new Date(item.time).toISOString();
+    time.push(tempDate);
+    cum_ret.push([tempDate, item.cum_ret]);
+    close.push([tempDate, item.close]);
+    volume.push([tempDate, item.volume]);
+  });
+
+
   // 年複合成長率、最大交易回落、波動率、夏普比率、贏率
   const [cagr, setCAGRValue] = useState();
   const onCAGRChange = (e) => {
@@ -39,68 +57,36 @@ const InfoSquare = (props) => {
   const onWINChange = (e) => {
     setWINValue(e.target.value);
   };
+  const [isBacktestMounted, setBacktestMounted] = useState(true);
 
-  const time = [];
-  const cum_ret = [];
-  const close = [];
-  const volume = [];
-
-  backtest.forEach((item) => {
-    const tempDate = new Date(item.time).toISOString();
-    time.push(tempDate);
-    cum_ret.push([tempDate, item.cum_ret]);
-    close.push([tempDate, item.close]);
-    volume.push([tempDate, item.volume]);
-  });
-
-  // useEffect(() => {
-  //   console.log('useEffect run ');
-  AuthService.backtestGet(email).then(
-    (res) => {
-      console.log(res[res.length - 1]);
-      res = res[res.length - 1];
-      if (typeof res.cagr === 'number') {
-        res.cagr = res.cagr.toFixed(2);
-      }
-      if (typeof res.max_drawdown === 'number') {
-        res.max_drawdown = (res.max_drawdown * 100).toFixed(2);
-      }
-      if (typeof res.volatility === 'number') {
-        res.volatility = (res.volatility * 100).toFixed(2);
-      }
-      if (typeof res.sharpe_ratio === 'number') {
-        res.sharpe_ratio = res.sharpe_ratio.toFixed(2);
-      }
-      if (typeof res.win_rate === 'number') {
-        res.win_rate = (res.win_rate * 100).toFixed(2);
-      }
-
-      setCAGRValue(res.cagr);
-      setMAXDValue(res.max_drawdown);
-      setVOLValue(res.volatility);
-      setSHARPElValue(res.sharpe_ratio);
-      setWINValue(res.win_rate);
-    },
-    (error) => {
-      const resMessage =
-        (error.response &&
-          error.response.data &&
-          error.response.data.message) ||
-        error.message ||
-        error.toString();
-    }
-  );
-  // }, []);
-
-
-  function WordCloud() {
-    const [wordcloud, setCloud] = useState("");
-
-    useEffect(() => {
-      console.log('useEffect word cloud run ');
-      AuthService.wordCloudGet().then(
+  useEffect(() => {
+    if (isBacktestMounted) {
+      console.log("five value useffect calls")
+      AuthService.backtestGet(email).then(
         (res) => {
-          setCloud(res);
+          console.log(res[res.length - 1]);
+          res = res[res.length - 1];
+          if (typeof res.cagr === 'number') {
+            res.cagr = res.cagr.toFixed(2);
+          }
+          if (typeof res.max_drawdown === 'number') {
+            res.max_drawdown = (res.max_drawdown * 100).toFixed(2);
+          }
+          if (typeof res.volatility === 'number') {
+            res.volatility = (res.volatility * 100).toFixed(2);
+          }
+          if (typeof res.sharpe_ratio === 'number') {
+            res.sharpe_ratio = res.sharpe_ratio.toFixed(2);
+          }
+          if (typeof res.win_rate === 'number') {
+            res.win_rate = (res.win_rate * 100).toFixed(2);
+          }
+
+          setCAGRValue(res.cagr);
+          setMAXDValue(res.max_drawdown);
+          setVOLValue(res.volatility);
+          setSHARPElValue(res.sharpe_ratio);
+          setWINValue(res.win_rate);
         },
         (error) => {
           const resMessage =
@@ -109,10 +95,39 @@ const InfoSquare = (props) => {
               error.response.data.message) ||
             error.message ||
             error.toString();
-          console.log(resMessage);
         }
       );
-    }, []);
+      setBacktestMounted(false);
+    }
+  }, [isBacktestMounted]);
+
+  function WordCloud() {
+    const [wordcloud, setCloud] = useState("");
+    var cloudRes;
+    useEffect(() => {
+      if (isCloudMounted) {
+        console.log('useEffect word cloud run ');
+        AuthService.wordCloudGet().then(
+          (res) => {
+            cloudRes = res;
+            setCloud(res);
+          },
+          (error) => {
+            const resMessage =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+            console.log(resMessage);
+          }
+        );
+      }
+      return () => {
+        if (cloudRes !== undefined)
+          setCloudMounted(false);
+      };
+    }, [isCloudMounted]);
 
     return (
       <div className="info_three_topic">
@@ -127,27 +142,35 @@ const InfoSquare = (props) => {
 
   function NewsList() {
     const [news, setNews] = useState([]);
+    var newsRes;
     console.log('useEffect news run ');
     useEffect(() => {
-      AuthService.crawlGet().then(
-        (res) => {
-          const processedNews = {};
-          Object.keys(res).forEach((title, index) => {
-            if (index >= 3) return; // 只需要Top3
-            processedNews[title] = res[title];
-          });
-          setNews(processedNews);
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-        }
-      );
-    }, []);
+      if (isNewsMounted) {
+        AuthService.crawlGet().then(
+          (res) => {
+            newsRes = res;
+            const processedNews = {};
+            Object.keys(res).forEach((title, index) => {
+              if (index >= 3) return; // 只需要Top3
+              processedNews[title] = res[title];
+            });
+            setNews(processedNews);
+          },
+          (error) => {
+            const resMessage =
+              (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+              error.message ||
+              error.toString();
+          }
+        )
+      };
+      return () => {
+        if (newsRes !== undefined)
+          setNewsMounted(false);
+      };
+    }, [isNewsMounted]);
 
     return (
       <div className="info_three_news">
@@ -178,11 +201,14 @@ const InfoSquare = (props) => {
   const MoodChart = () => {
     const eChartsRef = useRef(null);
     const [sentiment, setSentiment] = useState(0);
-
+    var tempSenti;
     useEffect(() => {
       console.log('useEffect sentiment run ');
+
       AuthService.sentimentGet().then(
         (res) => {
+          console.log(res);
+          tempSenti = res;
           if (typeof res === 'number') {
             res = res.toFixed(0);
           }
@@ -196,10 +222,11 @@ const InfoSquare = (props) => {
             error.message ||
             error.toString();
         }
-      );
+      )
     }, []);
 
     useEffect(() => {
+
       const myChart = eCharts.init(eChartsRef.current);
 
       let option = {
@@ -262,6 +289,7 @@ const InfoSquare = (props) => {
       };
 
       myChart.setOption(option);
+
     }, [sentiment]);
 
     return (

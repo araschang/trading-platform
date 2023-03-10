@@ -12,14 +12,6 @@ const StrategySquare = (props) => {
   const [exchange] = useState('Binance');
   const email = AuthService.getCurrentUserEmail();
   const [symbol] = useState('BTC/USDT');
-  // const [timeframe, setTimeframe] = useState('1m');
-  // const onTimeChange = (e) => {
-  //   setTimeframe(e.target.value);
-  // };
-  // const [monthValue, setMonthValue] = useState('1mon');
-  // const onMonthChange = (e) => {
-  //   setMonthValue(e.target.value);
-  // };
   const [checkedStra, setCheckedStra] = useState({});
   const [fast, setFastValue] = useState();
   const [slow, setSlowValue] = useState();
@@ -72,9 +64,21 @@ const StrategySquare = (props) => {
       alert('請至少選擇一個策略');
       return false;
     }
+    for (let i = 0; i < checkedBoxes.length; i++) {
+      const stra = checkedBoxes[i].name;
+      console.log(stra);
+      const parameters = checkedStra[stra];
+      console.log(parameters);
+      for (let key in parameters) {
+        const value = parameters[key];
+        if (!value) {
+          alert(`請輸入${stra}策略的${key}參數`);
+          return false;
+        }
+      }
+    }
     return true;
   }
-
 
   const handleCheckedStra = useCallback((name, value) => {
     setCheckedStra(prevState => ({

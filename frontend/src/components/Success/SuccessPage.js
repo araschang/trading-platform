@@ -1,5 +1,5 @@
 import SuccessSquare from "./SuccessSquare";
-
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import AlreadyLoginHeader from "../AlreadyLoginHeader"
 import "./css/SuccessPage.css"
@@ -8,31 +8,31 @@ function SuccessPage() {
   return (
     <div>
 
-      <AlreadyLoginHeader/>
+      <AlreadyLoginHeader />
       <div
-      style={{
-        display:'flex',
-        justifyContent:'space-around',
-        alignItems:'center',
-        flexDirection:'column',
-        position: 'relative',
-        top: '50%',
-        transform: 'translate(0%, 10%)',
-        gap:'2rem'
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          flexDirection: 'column',
+          position: 'relative',
+          top: '50%',
+          transform: 'translate(0%, 10%)',
+          gap: '2rem'
         }}>
-          {/* 進度條 */}
-          <div style={{
-            width: '674px',
-            height: '40px',
-            left: '299px',
-            top: '90px'
+        {/* 進度條 */}
+        <div style={{
+          width: '674px',
+          height: '40px',
+          left: '299px',
+          top: '90px'
         }}></div>
         <SuccessSquare />
-      
-        <button className="next_button" onClick={() =>navigate('/Choose')}>
-            <span>確定</span>
+
+        <button className="next_button" onClick={() => navigate('/Choose')}>
+          <span>確定</span>
         </button>
-  
+
       </div>
     </div>
   );

@@ -1,26 +1,23 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import './css/LoginSquare.css';
 import AuthService from "../../services/auth.service";
 
-const required = (value) => {
-  if (!value) {
-    return (
-      <div className="invalid-feedback d-block">
-        This field is required!
-      </div>
-    );
-  }
-};
-
 const LoginSquare = (props) => {
-  const { setCurrentPage } = props;
   const navigate = useNavigate();
   const form = useRef();
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [email, setEmail] = useState("");
+
+  const validateForm = () => {
+    if (email.trim() === "" || password.trim() === "") {
+      alert('請輸入電子郵件和密碼');
+      return false;
+    }
+    return true;
+  }
 
   const onChangeEmail = (e) => {
     const email = e.target.value;
@@ -32,9 +29,49 @@ const LoginSquare = (props) => {
     setPassword(password);
   };
 
+  function checkStraInput() {
+    const checkedBoxes = document.querySelectorAll('input[type=checkbox]:checked');
+    if (checkedBoxes.length === 0) {
+      alert('請至少選擇一個策略');
+      return false;
+    }
+    return true;
+  }
+
   const handleRegister = (e) => {
     e.preventDefault();
     setMessage("");
+<<<<<<< HEAD
+    if (validateForm()) {
+      AuthService.register(email, password).then(
+        (res) => {
+          console.log(res['data']);
+          // setMessage(res['data']);
+          if (res['data'] === 200) {
+            setMessage("Register Success!");
+            window.location.reload();
+          }
+          if (res['data'] === 401) {
+            setMessage("Member Already Exist");
+          }
+          if (res['data'] === 402) {
+            setMessage("Member not Exist");
+          }
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
+
+          setMessage(resMessage);
+
+        }
+      );
+    }
+=======
     AuthService.register(email, password).then(
       (res) => {
         console.log(res['data']);
@@ -55,15 +92,59 @@ const LoginSquare = (props) => {
 
       }
     );
+>>>>>>> main
   };
+
+  useEffect(() => {
+  }, [email, password]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-
     setMessage("");
-    setLoading(true);
+    // setLoading(true);
+    if (validateForm()) {
+      AuthService.login(email, password).then(
+        (res) => {
+          // navigate("/profile");
+          // window.location.reload();
+          console.log(email, password);
+          // console.log(res);
 
+          if (res === 200) {
+            navigate('/Choose', {
+              state: {
+                email: email,
+              }
+            });
+          }
+          if (res === 401) {
+            setMessage("Member Already Exist");
+          }
+          if (res === 402) {
+            setMessage("Member not Exist");
+          }
+          if (res === 403) {
+            setMessage("Wrong Password");
+          }
+          if (res === 200) {
+            navigate('/Choose');
+          }
+          // else {
+          //   window.location.reload();
+          // }
+        },
+        (error) => {
+          const resMessage =
+            (error.response &&
+              error.response.data &&
+              error.response.data.message) ||
+            error.message ||
+            error.toString();
 
+<<<<<<< HEAD
+          setLoading(false);
+          setMessage(resMessage);
+=======
     AuthService.login(email, password).then(
       (res) => {
         // navigate("/profile");
@@ -74,23 +155,10 @@ const LoginSquare = (props) => {
         setMessage(res);
         if (res === 200) {
           navigate('/Choose', { state: { email: email } });
+>>>>>>> main
         }
-        // else {
-        //   window.location.reload();
-        // }
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        setLoading(false);
-        setMessage(resMessage);
-      }
-    );
+      );
+    }
   };
 
   return (
@@ -105,7 +173,6 @@ const LoginSquare = (props) => {
           name="email"
           value={email}
           onChange={onChangeEmail}
-          validations={[required]}
         />
         <input
           type="password"
@@ -114,34 +181,27 @@ const LoginSquare = (props) => {
           name="password"
           value={password}
           onChange={onChangePassword}
-          validations={[required]}
         />
       </div>
       <div className="choose_button">
         <form ref={form} onSubmit={handleLogin}> {/*登入*/}
           <button className="login_button" disabled={loading}>
             {/* <button className="login_button" disabled={loading} onClick={() => navigate('/Choose')}> */}
-            {loading && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
             <span>Login</span>
           </button>
         </form>
         <form ref={form} onSubmit={handleRegister}> {/*註冊*/}
           <button className="register_button" disabled={loading}>
-            {loading && (
-              <span className="spinner-border spinner-border-sm"></span>
-            )}
             <span>Register</span>
           </button>
         </form>
-        {message && (
-          <div className="center alert-danger" role="alert">
-            {message}
-          </div>
-        )}
-      </div>
 
+      </div>
+      {message && (
+        <div className="center str_title_text">
+          {message}
+        </div>
+      )}
     </div>
   );
 };

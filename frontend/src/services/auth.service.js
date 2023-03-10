@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:5000/";
+const API_URL = "https://cat-jessie-vm.iottalktw.com/api/";
 
 const register = (email, password) => {
     return axios.post(API_URL + "membership", {
@@ -16,13 +16,16 @@ const login = (email, password) => {
             password: password
         })
         .then((response) => {
-            console.log(response);
-            if (response.data.account) {
-                localStorage.setItem("user", JSON.stringify(response.data));
+            if (response.data == 200) {
+                localStorage.setItem("user", JSON.stringify({ email }));
             }
-
             return response.data;
         });
+};
+
+const getCurrentUserEmail = () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    return user ? user.email : null;
 };
 
 const logout = () => {
@@ -37,8 +40,18 @@ const getCurrentUser = () => {
 };
 
 const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) => {
+    console.log({
+        exchange: exchange,
+        email: email,
+        symbol: symbol,
+        timeframe: timeframe,
+        strategy: strategy,
+        backtest_range: backtest_range
+    }
+
+    );
     return axios
-        .post(API_URL + "backtest", {
+        .post(API_URL + "backtest/" + email, {
             exchange: exchange,
             email: email,
             symbol: symbol,
@@ -54,7 +67,11 @@ const backtest = (exchange, email, symbol, timeframe, strategy, backtest_range) 
 
 const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy) => {
     return axios
+<<<<<<< HEAD
+        .post(API_URL + "trade/" + email, {
+=======
         .post(API_URL + "backtest", {
+>>>>>>> main
             email: email,
             exchange: exchange,
             api_key: api_key,
@@ -66,12 +83,45 @@ const tradeImply = (email, exchange, api_key, api_secret, pass_phrase, symbol, m
             strategy: strategy
         })
         .then((response) => {
+<<<<<<< HEAD
+=======
             console.log(response);
+>>>>>>> main
             return response.data;
         });
 };
 
 
+<<<<<<< HEAD
+const backtestGet = (email) => {
+    return axios
+        .get(API_URL + "backtest/" + email)
+        .then((response) => {
+            return response.data;
+        });
+};
+
+const crawlGet = () => {
+    return axios
+        .get(API_URL + "crawl")
+        .then((response) => {
+            return response.data;
+        });
+};
+
+const sentimentGet = () => {
+    return axios
+        .get(API_URL + "sentiment")
+        .then((response) => {
+            return response.data;
+        });
+};
+
+const wordCloudGet = () => {
+    return axios
+        .get(API_URL + "wordcloud")
+        .then((response) => {
+=======
 const tradeGet = (email) => {
     return axios
         .get(API_URL + "backtest", {
@@ -79,19 +129,32 @@ const tradeGet = (email) => {
         })
         .then((response) => {
             console.log(response);
+>>>>>>> main
             return response.data;
         });
 };
 
 
+<<<<<<< HEAD
+
+=======
+>>>>>>> main
 const AuthService = {
     register,
+    getCurrentUserEmail,
     login,
     logout,
     getCurrentUser,
     backtest,
     tradeImply,
+<<<<<<< HEAD
+    backtestGet,
+    sentimentGet,
+    crawlGet,
+    wordCloudGet
+=======
     tradeGet
+>>>>>>> main
 }
 
 export default AuthService;

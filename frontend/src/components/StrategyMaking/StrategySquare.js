@@ -28,17 +28,17 @@ const StrategySquare = (props) => {
   };
 
   const timeValues = [
-    { value: '1m', label: '1m', disabled: monthValue !== '1d' },
-    { value: '5m', label: '5m', disabled: monthValue !== '3d' },
-    { value: '1h', label: '1h', disabled: monthValue !== '1mon' },
-    { value: '4h', label: '4h', disabled: false },
-    { value: '1d', label: '1d', disabled: false },
+    { value: '1m', label: '1m', disabled: monthValue === '3d' || monthValue === '1mon' || monthValue === '3mon' || monthValue === '6mon' },
+    { value: '5m', label: '5m', disabled: monthValue === '1mon' || monthValue === '3mon' || monthValue === '6mon' },
+    { value: '1h', label: '1h', disabled: monthValue === '3mon' || monthValue === '6mon' },
+    { value: '4h', label: '4h', disabled: monthValue === '1d' || monthValue === '3d' },
+    { value: '1d', label: '1d', disabled: monthValue === '1d' || monthValue === '3d' || monthValue === '1mon' },
   ];
 
   const monthValues = [
-    { value: '1d', label: '1天', disabled: timeframe === '5m' || timeframe === '1h' },
-    { value: '3d', label: '3天', disabled: timeframe === '1m' || timeframe === '1h' },
-    { value: '1mon', label: '1個月', disabled: timeframe === '1m' || timeframe === '5m' },
+    { value: '1d', label: '1天', disabled: timeframe === '4h' || timeframe === '1d' },
+    { value: '3d', label: '3天', disabled: timeframe === '1m' || timeframe === '4h' || timeframe === '1d' },
+    { value: '1mon', label: '1個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1d' },
     { value: '3mon', label: '3個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1h' },
     { value: '6mon', label: '6個月', disabled: timeframe === '1m' || timeframe === '5m' || timeframe === '1h' },
   ];

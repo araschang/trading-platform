@@ -9,11 +9,9 @@ def get_price():
     This function would append the latest date and the latest price 
     to "./price_data.csv".
     '''
-    
 
     options = Options()
     
-
     current_system = platform.system()
     if current_system == 'Linux':
         chrome_path = '/usr/lib/chromium-browser/chromedriver'

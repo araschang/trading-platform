@@ -338,6 +338,8 @@ const InfoSquare = (props) => {
           type: 'time',
           boundaryGap: false,
           axisLabel: {
+            interval:0,  
+    rotate:40,
             formatter: (value) => moment(value).format('DD:HH:mm')
           }
         },

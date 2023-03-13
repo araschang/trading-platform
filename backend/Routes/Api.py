@@ -33,8 +33,13 @@ def job_trade():
         timeframe = tradeMember['timeframe']
         strategy = tradeMember['strategy']
 
-        trade = Trade(id, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy)
-        trade.Trade()
+        try:
+            trade = Trade(id, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy)
+            trade.Trade()
+        except Exception as e:
+            mongo = MongoConnector()
+            tradeMemberConnection = mongo.getTradeMemberConn()
+            tradeMemberConnection.update_one({'id': id}, {'$set': {'problem': '1'}})
     print('JOB "TRADE" DONE')
 
 def job_sentiment():

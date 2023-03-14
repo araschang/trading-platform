@@ -7,6 +7,7 @@ import moment from 'moment';
 import AlreadyLoginHeader from "../AlreadyLoginHeader"
 import AuthService from "../../services/auth.service";
 import "./css/InfoPage.css"
+import "./css/InfoSquare.css"
 function InfoPage() {
 
   const { state } = useLocation();
@@ -51,6 +52,8 @@ function InfoPage() {
           type: 'time',
           boundaryGap: false,
           axisLabel: {
+            interval:0,  
+    rotate:40,  
             formatter: (value) => moment(value).format('DD:HH:mm')
           }
         },
@@ -66,25 +69,19 @@ function InfoPage() {
             start: 0,
             end: 100,
             height: '5%',
+            bottom:'15%'
           },
           {
             type: 'inside',
             start: 0,
             end: 100
-          },
-          {
-            show: false,
-            yAxisIndex: 0,
-            filterMode: 'empty',
-            width: 10,
-            height: '70%',
-            showDataShadow: false,
-            left: '93%'
           }
         ],
         grid: {
           top: "15%",
-          right: '15%'
+          right: '20%',
+          left:'5%',
+          containLabel: true,
         },
         color: '#677BF6',
         series: [
@@ -106,9 +103,8 @@ function InfoPage() {
       <div
         ref={eChartsRef}
         style={{
-          width: 480,
-          height: 300,
-          marginLeft: 10
+          width: 530,
+          height: 320,
         }}
       />
     );
@@ -139,6 +135,8 @@ function InfoPage() {
           type: "time",
           boundaryGap: false,
           axisLabel: {
+            interval:0,  
+    rotate:40,  
             formatter: (value) => {
               return moment(value).format("DD:HH:mm");
             },
@@ -188,21 +186,13 @@ function InfoPage() {
             start: 0,
             end: 100,
             height: "5%",
+            bottom:'15%'
           },
           {
             type: "inside",
             start: 0,
             end: 100,
-          },
-          {
-            show: false,
-            yAxisIndex: 0,
-            filterMode: "empty",
-            width: 10,
-            height: "70%",
-            showDataShadow: false,
-            left: "93%",
-          },
+          }
         ],
         series: [
           {
@@ -231,7 +221,7 @@ function InfoPage() {
         ref={eChartsRef}
         style={{
           width: 530,
-          height: 300,
+          height: 320,
           marginLeft: 10,
         }}
       ></div>

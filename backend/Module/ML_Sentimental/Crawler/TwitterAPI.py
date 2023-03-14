@@ -41,7 +41,7 @@ def clean_retweet_html(text):
     else:
         return text
 
-def run_twitter():
+def getTwitterData():
     # read configs
     config = configparser.ConfigParser()
     config_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))), 'config.ini')
@@ -85,4 +85,4 @@ def run_twitter():
     df_clean.to_csv(path)
 
 if __name__ == "__main__":
-    run_twitter()
+    getTwitterData()

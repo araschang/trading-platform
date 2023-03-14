@@ -1,23 +1,15 @@
-<<<<<<< HEAD
 /* eslint-disable no-unused-vars */
 import React, { useState, useRef, PureComponent, useEffect } from "react";
-=======
-import React, { useState, useRef, PureComponent } from "react";
->>>>>>> main
 import './css/InfoSquare.css';
 import { useNavigate, useLocation } from "react-router-dom";
 import * as eCharts from "echarts";
 import { Radio } from 'antd';
 import AuthService from "../../services/auth.service";
-import moment from 'moment';
+
+import moment from 'moment'
+
 
 const InfoSquare = (props) => {
-=======
-
-
-class IncomeChart extends PureComponent {
-  eChartsRef: any = React.createRef();
->>>>>>> main
 
   const navigate = useNavigate()
   const { state } = useLocation();
@@ -28,7 +20,6 @@ class IncomeChart extends PureComponent {
   const strategy = state.strategy;
   const timeframe = state.timeframe;
 
-<<<<<<< HEAD
   const [isNewsMounted, setNewsMounted] = useState(true);
   const [isSentiMounted, setSentiMounted] = useState(true);
   const [isCloudMounted, setCloudMounted] = useState(true);
@@ -143,73 +134,8 @@ class IncomeChart extends PureComponent {
         }
       </div >
     );
-=======
-    let option = {
-      tooltip: {
-        trigger: 'axis',
-        axisPointer: {
-          type: 'cross',
-          label: {
-            backgroundColor: '#6a7985'
-          }
-        }
-      },
-      xAxis: {
-        type: 'category',
-        boundaryGap: false,
-        data: ['1/1', '1/5', '1/10', '1/15', '1/20', '1/25', '1/30']
-      },
-      yAxis: {
-        type: 'value'
-      },
-      dataZoom: [
-        {
-          show: true,
-          start: 0,
-          end: 100,
-          height: '5%',
-        },
-        {
-          type: 'inside',
-          start: 0,
-          end: 100
-        },
-        {
-          show: false,
-          yAxisIndex: 0,
-          filterMode: 'empty',
-          width: 10,
-          height: '70%',
-          showDataShadow: false,
-          left: '93%'
-        }
-      ],
-      grid: {
-        top: "15%",
-        right: '15%'
-      },
-      color: '#677BF6',
-      series: [
-        {
-          data: [820, 932, 901, 934, 1290, 1330, 1320],
-          type: 'line'
-        }
-      ]
-    };
-
-    myChart.setOption(option);
->>>>>>> main
   }
-  render() {
-    return <div ref={this.eChartsRef} style={{
-      width: 480,
-      height: 300,
-      marginLeft: 10
-    }}></div>;
-  }
-}
 
-<<<<<<< HEAD
   function NewsList() {
     const [news, setNews] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -414,6 +340,8 @@ class IncomeChart extends PureComponent {
           type: 'time',
           boundaryGap: false,
           axisLabel: {
+            interval:0,  
+    rotate:40,
             formatter: (value) => moment(value).format('DD:HH:mm')
           }
         },
@@ -653,7 +581,6 @@ class IncomeChart extends PureComponent {
             <div className="info_subtitle">市場情緒</div>
             <MoodChart />
           </div>
-<<<<<<< HEAD
           <WordCloud />
           <NewsList />
         </div>
@@ -675,28 +602,6 @@ class IncomeChart extends PureComponent {
           })}>
             <span>前往交易</span>
           </button>
-=======
-          <div className="info_three_topic">
-            <div className="info_subtitle">社群媒體熱門話題</div>
-          </div>
-          <div className="info_three_news">
-            <div className="info_subtitle">最近新聞連結</div>
-            <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'flex-start', flexDirection: 'column', height: '150px', marginLeft: '3rem' }}>
-              <div >
-                <span className="news_top">Top1</span>
-                <div className="news_url">新聞連結</div>
-              </div>
-              <div>
-                <span className="news_top">Top2</span>
-                <div className="news_url">新聞連結</div>
-              </div>
-              <div>
-                <span className="news_top">Top3</span>
-                <div className="news_url">新聞連結</div>
-              </div>
-            </div>
-          </div>
->>>>>>> main
         </div>
       </div>
     </>
@@ -707,13 +612,3 @@ class IncomeChart extends PureComponent {
 
 }
 export default InfoSquare;
-=======
-
-
-
-    </div>
-  );
-
-}
-export default InfoSquare;
->>>>>>> main

@@ -5,7 +5,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import * as eCharts from "echarts";
 import { Radio } from 'antd';
 import AuthService from "../../services/auth.service";
+
 import moment from 'moment'
+
 
 const InfoSquare = (props) => {
 
@@ -17,43 +19,29 @@ const InfoSquare = (props) => {
   const symbol = state.symbol;
   const strategy = state.strategy;
   const timeframe = state.timeframe;
-  const backtest = JSON.parse(state.backtest);
 
   const [isNewsMounted, setNewsMounted] = useState(true);
   const [isSentiMounted, setSentiMounted] = useState(true);
   const [isCloudMounted, setCloudMounted] = useState(true);
-  const time = [];
-  const cum_ret = [];
-  const close = [];
-  const volume = [];
-
-  backtest.forEach((item) => {
-    const tempDate = new Date(item.time).toISOString();
-    time.push(tempDate);
-    cum_ret.push([tempDate, item.cum_ret]);
-    close.push([tempDate, item.close]);
-    volume.push([tempDate, item.volume]);
-  });
-
 
   // 年複合成長率、最大交易回落、波動率、夏普比率、贏率
-  const [cagr, setCAGRValue] = useState();
+  const [cagr, setCAGRValue] = useState("Loading...");
   const onCAGRChange = (e) => {
     setCAGRValue(e.target.value);
   };
-  const [max_drawdown, setMAXDValue] = useState();
+  const [max_drawdown, setMAXDValue] = useState("Loading...");
   const onMAXDChange = (e) => {
     setMAXDValue(e.target.value);
   };
-  const [volatility, setVOLValue] = useState();
+  const [volatility, setVOLValue] = useState("Loading...");
   const onVOLChange = (e) => {
     setVOLValue(e.target.value);
   };
-  const [sharpe_ratio, setSHARPElValue] = useState();
+  const [sharpe_ratio, setSHARPElValue] = useState("Loading...");
   const onSHARPEChange = (e) => {
     setSHARPElValue(e.target.value);
   };
-  const [win_rate, setWINValue] = useState();
+  const [win_rate, setWINValue] = useState("Loading...");
   const onWINChange = (e) => {
     setWINValue(e.target.value);
   };
@@ -82,11 +70,11 @@ const InfoSquare = (props) => {
             res.win_rate = (res.win_rate * 100).toFixed(2);
           }
 
-          setCAGRValue(res.cagr);
+          setCAGRValue(res.cagr + '%');
           setMAXDValue(res.max_drawdown);
-          setVOLValue(res.volatility);
-          setSHARPElValue(res.sharpe_ratio);
-          setWINValue(res.win_rate);
+          setVOLValue(res.volatility + '%');
+          setSHARPElValue(res.sharpe_ratio + '%');
+          setWINValue(res.win_rate + '%');
         },
         (error) => {
           const resMessage =
@@ -103,6 +91,7 @@ const InfoSquare = (props) => {
 
   function WordCloud() {
     const [wordcloud, setCloud] = useState("");
+    const [isLoading, setLoading] = useState(true);
     var cloudRes;
     useEffect(() => {
       if (isCloudMounted) {
@@ -111,6 +100,7 @@ const InfoSquare = (props) => {
           (res) => {
             cloudRes = res;
             setCloud(res);
+            setLoading(false);
           },
           (error) => {
             const resMessage =
@@ -120,6 +110,7 @@ const InfoSquare = (props) => {
               error.message ||
               error.toString();
             console.log(resMessage);
+            setLoading(false);
           }
         );
       }
@@ -132,16 +123,22 @@ const InfoSquare = (props) => {
     return (
       <div className="info_three_topic">
         <div className="info_subtitle">社群媒體熱門話題</div>
-        <img
-          src={`data:image/jpeg;base64,${wordcloud}`}
-          style={{ bottom: '17%', height: '220px', width: '350px', position: 'absolute', clip: 'rect(40px,290px,170px,30px)' }}
-        />
-      </div>
+        {isLoading ? (
+          <span className="info_two_square_text_content" style={{ bottom: '26%', left: '49%', position: 'absolute' }}> Loading...</span>
+        ) : (
+          <img
+            src={`data:image/jpeg;base64,${wordcloud}`}
+            style={{ bottom: '17%', height: '220px', width: '350px', position: 'absolute', clip: 'rect(40px,290px,170px,30px)' }}
+          />
+        )
+        }
+      </div >
     );
   }
 
   function NewsList() {
-    const [news, setNews] = useState([]);
+    const [news, setNews] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
     var newsRes;
     console.log('useEffect news run ');
     useEffect(() => {
@@ -155,6 +152,7 @@ const InfoSquare = (props) => {
               processedNews[title] = res[title];
             });
             setNews(processedNews);
+            setIsLoading(false);
           },
           (error) => {
             const resMessage =
@@ -175,25 +173,29 @@ const InfoSquare = (props) => {
     return (
       <div className="info_three_news">
         <div className="info_subtitle">最近新聞連結</div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "flex-start",
-            flexDirection: "column",
-            height: "150px",
-            marginLeft: "1rem",
-          }}
-        >
-          {Object.keys(news).map((title, index) => (
-            <div key={index}>
-              <span className="news_top">Top {index + 1}</span>
-              <div className="news_url">
-                <a href={news[title]}>{title}</a>
+        {isLoading ? (
+          <span className="info_two_square_text_content" style={{ bottom: '26%', left: '81%', position: 'absolute' }}> Loading...</span>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "flex-start",
+              flexDirection: "column",
+              height: "150px",
+              marginLeft: "1rem",
+            }}
+          >
+            {Object.keys(news).map((title, index) => (
+              <div key={index}>
+                <span className="news_top">Top {index + 1}</span>
+                <div className="news_url">
+                  <a href={news[title]}>{title}</a>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
@@ -551,15 +553,15 @@ const InfoSquare = (props) => {
         <div className="info_two_square">
           <div className="info_two_square_text">
             <span className="info_two_square_text_title">年複成長率</span>
-            <span className="info_two_square_text_content">{cagr}%</span>
+            <span className="info_two_square_text_content">{cagr}</span>
           </div>
           <div className="info_two_square_text">
             <span className="info_two_square_text_title">最大交易回落</span>
-            <span className="info_two_square_text_content">{max_drawdown}%</span>
+            <span className="info_two_square_text_content">{max_drawdown}</span>
           </div>
           <div className="info_two_square_text">
             <span className="info_two_square_text_title">波動率</span>
-            <span className="info_two_square_text_content">{volatility}%</span>
+            <span className="info_two_square_text_content">{volatility}</span>
           </div>
           <div className="info_two_square_text">
             <span className="info_two_square_text_title">夏普比率</span>
@@ -602,6 +604,7 @@ const InfoSquare = (props) => {
           </button>
         </div>
       </div>
+    </>
 
 
     </div >

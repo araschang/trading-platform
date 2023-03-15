@@ -69,7 +69,7 @@ const InfoSquare = (props) => {
           }
 
           setCAGRValue(res.cagr + '%');
-          setMAXDValue(res.max_drawdown);
+          setMAXDValue(res.max_drawdown + '%');
           setVOLValue(res.volatility + '%');
           setSHARPElValue(res.sharpe_ratio + '%');
           setWINValue(res.win_rate + '%');

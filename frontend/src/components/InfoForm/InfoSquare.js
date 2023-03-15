@@ -188,7 +188,7 @@ const InfoSquare = (props) => {
               <div key={index}>
                 <span className="news_top">Top {index + 1}</span>
                 <div className="news_url">
-                  <a href={news[title]}>{title}</a>
+                  <a href={news[title]} target="_blank" rel="noopener noreferrer">{title}</a>
                 </div>
               </div>
             ))}

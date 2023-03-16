@@ -5,9 +5,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import * as eCharts from "echarts";
 import { Radio } from 'antd';
 import AuthService from "../../services/auth.service";
-
-import moment from 'moment'
-
+import moment from 'moment';
 
 const InfoSquare = (props) => {
 
@@ -190,7 +188,7 @@ const InfoSquare = (props) => {
               <div key={index}>
                 <span className="news_top">Top {index + 1}</span>
                 <div className="news_url">
-                  <a href={news[title]} target="_blank" rel="noopener noreferrer">{title}</a>
+                  <a href={news[title]}>{title}</a>
                 </div>
               </div>
             ))}
@@ -320,234 +318,9 @@ const InfoSquare = (props) => {
     );
   }
 
-  const IncomeChart = () => {
-    const eChartsRef = useRef();
-
-    useEffect(() => {
-      const myChart = eCharts.init(eChartsRef.current);
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'cross',
-            label: {
-              backgroundColor: '#6a7985'
-            }
-          }
-        },
-        calculable: true,
-        xAxis: {
-          type: 'time',
-          boundaryGap: false,
-          axisLabel: {
-            interval:0,  
-    rotate:40,
-            formatter: (value) => moment(value).format('DD:HH:mm')
-          }
-        },
-        yAxis: {
-          type: 'value',
-          scale: true,
-          min: -100,
-          max: 100
-        },
-        dataZoom: [
-          {
-            show: true,
-            start: 0,
-            end: 100,
-            height: '5%',
-          },
-          {
-            type: 'inside',
-            start: 0,
-            end: 100
-          },
-          {
-            show: false,
-            yAxisIndex: 0,
-            filterMode: 'empty',
-            width: 10,
-            height: '70%',
-            showDataShadow: false,
-            left: '93%'
-          }
-        ],
-        grid: {
-          top: "15%",
-          right: '15%'
-        },
-        color: '#677BF6',
-        series: [
-          {
-            data: cum_ret,
-            type: 'line'
-          }
-        ]
-      };
-
-      myChart.setOption(option);
-
-      return () => {
-        myChart.dispose();
-      };
-    }, []);
-
-    return (
-      <div
-        ref={eChartsRef}
-        style={{
-          width: 480,
-          height: 300,
-          marginLeft: 10
-        }}
-      />
-    );
-  };
-
-
-  const PriceChart = () => {
-    const eChartsRef = useRef(null);
-
-    useEffect(() => {
-      const myChart = eCharts.init(eChartsRef.current);
-
-      const option = {
-        tooltip: {
-          trigger: "axis",
-          axisPointer: {
-            type: "cross",
-            label: {
-              backgroundColor: "#6a7985",
-            },
-          },
-        },
-        legend: {
-          data: ["價格", "交易量"],
-          top: "5%",
-        },
-        xAxis: {
-          type: "time",
-          boundaryGap: false,
-          axisLabel: {
-            formatter: (value) => {
-              return moment(value).format("DD:HH:mm");
-            },
-          },
-          nameTextStyle: {
-            width: '1em',
-            overflow: 'truncate',
-            fontSize: 10
-          }
-        },
-        yAxis: [
-          {
-            type: "value",
-            name: "交易量",
-            position: "right",
-            alignTicks: true,
-            axisLine: {
-              show: true,
-            },
-            axisLabel: {
-              formatter: "{value} ",
-            },
-          },
-          {
-            type: "value",
-            name: "價格",
-            position: "left",
-            alignTicks: true,
-            axisLine: {
-              show: true,
-            },
-            axisLabel: {
-              formatter: "{value} 元",
-            },
-          },
-        ],
-        grid: {
-          top: "20%",
-          containLabel: true,
-          right: '5%',
-          left: '2%'
-        },
-        color: ["#F2C94C", "#F2994A"],
-        dataZoom: [
-          {
-            show: true,
-            start: 0,
-            end: 100,
-            height: "5%",
-          },
-          {
-            type: "inside",
-            start: 0,
-            end: 100,
-          },
-          {
-            show: false,
-            yAxisIndex: 0,
-            filterMode: "empty",
-            width: 10,
-            height: "70%",
-            showDataShadow: false,
-            left: "93%",
-          },
-        ],
-        series: [
-          {
-            name: "交易量",
-            type: "line",
-            data: volume,
-          },
-          {
-            name: "價格",
-            type: "line",
-            yAxisIndex: 1,
-            data: close,
-          },
-        ],
-      };
-
-      myChart.setOption(option);
-
-      return () => {
-        myChart.dispose();
-      };
-    }, []);
-
-    return (
-      <div
-        ref={eChartsRef}
-        style={{
-          width: 530,
-          height: 300,
-          marginLeft: 10,
-        }}
-      ></div>
-    );
-  };
-
   return (
-    <div className="info_square">
-      {/* title變動 */}
-      <div className="info_big_title">比特幣 Bitcoin </div>
-      <div className="info_one">
-        <div className="info_one_income">
-          <div className="info_title">收益走勢</div>
-          <div className="info_one_income_square">
-            <IncomeChart />
-          </div>
-        </div>
-        <div className="info_one_price">
-          <div className="info_title">價格和交易量走勢</div>
-          <div className="info_one_price_square">
 
-            <PriceChart />
-          </div>
-        </div>
-      </div>
+    <>
       <div className="info_two">
         <div className="info_title">回測</div>
         <div className="info_two_square">
@@ -569,7 +342,7 @@ const InfoSquare = (props) => {
           </div>
           <div className="info_two_square_text">
             <span className="info_two_square_text_title">贏率</span>
-            <span className="info_two_square_text_content">{win_rate}%</span>
+            <span className="info_two_square_text_content">{win_rate}</span>
           </div>
         </div>
       </div>
@@ -607,7 +380,6 @@ const InfoSquare = (props) => {
     </>
 
 
-    </div >
   );
 
 }

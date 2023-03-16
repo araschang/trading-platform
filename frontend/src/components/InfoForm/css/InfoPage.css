@@ -1,5 +1,5 @@
 .info_next_button {
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
@@ -16,10 +16,11 @@
     line-height: 175%;
     color: white;
 }
-.info_back_button{
+
+.info_back_button {
     background-color: white;
     color: #677BF6;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
@@ -36,19 +37,32 @@
     line-height: 175%;
 
 }
+
 .info_next_button:hover {
     background-color: white;
     color: #677BF6;
 }
+
 .info_back_button:hover {
     background-color: #677BF6;
     color: white;
 }
-.button_group{
-    display:flex;
+
+.button_group {
+    display: flex;
     justify-content: space-around;
     align-items: center;
     flex-direction: row;
-    width:640px;
+    width: 640px;
 
+}
+
+@media(min-width: 2560px) {
+    .rwd_progress {
+        left: '25%'
+    }
+
+    .rwd_square {
+        top: '100%'
+    }
 }

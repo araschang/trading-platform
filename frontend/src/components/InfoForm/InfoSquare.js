@@ -80,7 +80,7 @@ class IncomeChart extends PureComponent {
           }
 
           setCAGRValue(res.cagr + '%');
-          setMAXDValue(res.max_drawdown);
+          setMAXDValue(res.max_drawdown + '%');
           setVOLValue(res.volatility + '%');
           setSHARPElValue(res.sharpe_ratio + '%');
           setWINValue(res.win_rate + '%');
@@ -264,7 +264,7 @@ class IncomeChart extends PureComponent {
               <div key={index}>
                 <span className="news_top">Top {index + 1}</span>
                 <div className="news_url">
-                  <a href={news[title]}>{title}</a>
+                  <a href={news[title]} target="_blank" rel="noopener noreferrer">{title}</a>
                 </div>
               </div>
             ))}

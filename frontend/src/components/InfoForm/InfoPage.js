@@ -52,8 +52,8 @@ function InfoPage() {
           type: 'time',
           boundaryGap: false,
           axisLabel: {
-            interval:0,  
-    rotate:40,  
+            interval: 0,
+            rotate: 40,
             formatter: (value) => moment(value).format('DD:HH:mm')
           }
         },
@@ -61,26 +61,31 @@ function InfoPage() {
           type: 'value',
           scale: true,
           min: -100,
-          max: 100
+          max: 100,
+          axisLabel: {
+            interval: 0,
+            formatter: (value) => (value + '%')
+          }
         },
         dataZoom: [
           {
             show: true,
-            start: 0,
+            start: 80,
             end: 100,
             height: '5%',
-            bottom:'15%'
+            bottom: '15%'
           },
           {
             type: 'inside',
-            start: 0,
-            end: 100
+            start: 49,
+            end: 51,
+            yAxisIndex: [0]
           }
         ],
         grid: {
           top: "15%",
           right: '20%',
-          left:'5%',
+          left: '5%',
           containLabel: true,
         },
         color: '#677BF6',
@@ -135,8 +140,8 @@ function InfoPage() {
           type: "time",
           boundaryGap: false,
           axisLabel: {
-            interval:0,  
-    rotate:40,  
+            interval: 0,
+            rotate: 40,
             formatter: (value) => {
               return moment(value).format("DD:HH:mm");
             },
@@ -186,7 +191,7 @@ function InfoPage() {
             start: 0,
             end: 100,
             height: "5%",
-            bottom:'15%'
+            bottom: '15%'
           },
           {
             type: "inside",

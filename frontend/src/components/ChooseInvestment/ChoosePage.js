@@ -11,14 +11,15 @@ function ChoosePage() {
 
       <AlreadyLoginHeader />
       {/* 進度條 */}
-      <div style={{
+      <div className='rwd_progress' style={{
         position: 'absolute',
         width: '674px',
         height: '61px',
         left: '23%',
-        top: '15%'
+        top: '15%',
+
       }}><OneProgressBar /></div>
-      <div
+      <div className='rwd_square'
         style={{
           display: 'flex',
           justifyContent: 'space-around',

@@ -41,7 +41,6 @@ const LoginSquare = (props) => {
   const handleRegister = (e) => {
     e.preventDefault();
     setMessage("");
-<<<<<<< HEAD
     if (validateForm()) {
       AuthService.register(email, password).then(
         (res) => {
@@ -71,28 +70,6 @@ const LoginSquare = (props) => {
         }
       );
     }
-=======
-    AuthService.register(email, password).then(
-      (res) => {
-        console.log(res['data']);
-        setMessage(res['data']);
-        if (res === 200) {
-          window.location.reload('/Choose');
-        }
-      },
-      (error) => {
-        const resMessage =
-          (error.response &&
-            error.response.data &&
-            error.response.data.message) ||
-          error.message ||
-          error.toString();
-
-        setMessage(resMessage);
-
-      }
-    );
->>>>>>> main
   };
 
   useEffect(() => {
@@ -102,63 +79,48 @@ const LoginSquare = (props) => {
     e.preventDefault();
     setMessage("");
     // setLoading(true);
-    if (validateForm()) {
-      AuthService.login(email, password).then(
-        (res) => {
-          // navigate("/profile");
-          // window.location.reload();
-          console.log(email, password);
-          // console.log(res);
-
-          if (res === 200) {
-            navigate('/Choose', {
-              state: {
-                email: email,
-              }
-            });
-          }
-          if (res === 401) {
-            setMessage("Member Already Exist");
-          }
-          if (res === 402) {
-            setMessage("Member not Exist");
-          }
-          if (res === 403) {
-            setMessage("Wrong Password");
-          }
-          if (res === 200) {
-            navigate('/Choose');
-          }
-          // else {
-          //   window.location.reload();
-          // }
-        },
-        (error) => {
-          const resMessage =
-            (error.response &&
-              error.response.data &&
-              error.response.data.message) ||
-            error.message ||
-            error.toString();
-
-<<<<<<< HEAD
-          setLoading(false);
-          setMessage(resMessage);
-=======
     AuthService.login(email, password).then(
       (res) => {
         // navigate("/profile");
         // window.location.reload();
-        // console.log(email, password);
+        console.log(email, password);
         // console.log(res);
 
-        setMessage(res);
         if (res === 200) {
-          navigate('/Choose', { state: { email: email } });
->>>>>>> main
+          navigate('/Choose', {
+            state: {
+              email: email,
+            }
+          });
         }
-      );
-    }
+        if (res === 401) {
+          setMessage("Member Already Exist");
+        }
+        if (res === 402) {
+          setMessage("Member not Exist");
+        }
+        if (res === 403) {
+          setMessage("Wrong Password");
+        }
+        if (res === 200) {
+          navigate('/Choose');
+        }
+        // else {
+        //   window.location.reload();
+        // }
+      },
+      (error) => {
+        const resMessage =
+          (error.response &&
+            error.response.data &&
+            error.response.data.message) ||
+          error.message ||
+          error.toString();
+
+        setLoading(false);
+        setMessage(resMessage);
+      }
+    );
   };
 
   return (

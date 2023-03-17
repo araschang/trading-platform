@@ -115,7 +115,6 @@ function InfoPage() {
     );
   };
 
-
   const PriceChart = () => {
     const eChartsRef = useRef(null);
 
@@ -233,19 +232,18 @@ function InfoPage() {
     );
   };
 
-
   return (
     <div>
       <AlreadyLoginHeader />
       {/* 進度條 */}
-      <div style={{
+      <div className='rwd_progress' style={{
         position: 'absolute',
         width: '674px',
         height: '61px',
         left: '23%',
         top: '15%'
       }}><MultiStepProgressBar /></div>
-      <div
+      <div className='rwd_square'
         style={{
           display: 'flex',
           justifyContent: 'space-around',
@@ -283,3 +281,5 @@ function InfoPage() {
 }
 
 export default InfoPage;
+
+

@@ -1,5 +1,5 @@
 # A Quantitative Trading Platform for Non-Programmers
- 🎉Winning 🥉The Third Place in the [Coding 101 Competition](https://sites.google.com/view/2023coding101/index?authuser=0)🎉
+ 🎉 Winning 🥉The Third Place in the [Coding 101 Competition](https://sites.google.com/view/2023coding101/index?authuser=0)🎉
 
 ## Project Introduction
 Our goal: "Empowering Traders to Automate Their Strategies: A Modular Trading Platform for Non-Programmers"

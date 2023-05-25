@@ -16,10 +16,10 @@ Our platform offers a user-friendly UI/UX interface, enabling traders to effortl
 5. Data Visualization Presentation: Integrating financial market information through data visualization techniques for quick market trend comprehension.
 
 ## Architecture
-![](https://hackmd-prod-images.s3-ap-northeast-1.amazonaws.com/uploads/upload_a6f76b86e1faacf86db9fa36adb7cf3a.jpg?AWSAccessKeyId=AKIA3XSAAW6AWSKNINWO&Expires=1684913649&Signature=F%2BDuouoemkm0SozbEtJwe1ZghO8%3D)
+![](https://github.com/araschang0827/trading-platform/blob/main/src/Architecture.jpg?raw=true)
 
 ## Backend Architecture
-![](https://hackmd-prod-images.s3-ap-northeast-1.amazonaws.com/uploads/upload_5c736d0ba0cd6773fa1071e8bedd3a61.jpg?AWSAccessKeyId=AKIA3XSAAW6AWSKNINWO&Expires=1684913544&Signature=28iIc1AtBsyvKhf%2BuZ3S42uhPbE%3D)
+![](https://github.com/araschang0827/trading-platform/blob/main/src/BackendArchitecture.jpg?raw=true)
 
 ## Demo
-![](https://hackmd-prod-images.s3-ap-northeast-1.amazonaws.com/uploads/upload_09ea866efde467c49ae37a75569895b1.jpg?AWSAccessKeyId=AKIA3XSAAW6AWSKNINWO&Expires=1684913706&Signature=38iLQJOfaMXiilHUT%2B53DR2iziI%3D)
+![](https://github.com/araschang0827/trading-platform/blob/main/src/Flow.jpg?raw=true)

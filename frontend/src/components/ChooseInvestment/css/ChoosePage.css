@@ -1,6 +1,5 @@
-
 .choose_next_button {
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     box-sizing: border-box;
@@ -17,6 +16,7 @@
     line-height: 175%;
     color: white;
 }
+
 .choose_next_button:hover {
     background-color: white;
     color: #677BF6;

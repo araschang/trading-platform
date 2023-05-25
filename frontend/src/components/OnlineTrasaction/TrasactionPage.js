@@ -1,3 +1,4 @@
+import React from 'react';
 import TrasactionSquare from "./TrasactionSquare";
 import MultiStepProgressBar from './FourProgressBar'
 import { useNavigate } from "react-router-dom";
@@ -23,7 +24,7 @@ function TrasactionPage() {
           alignItems: 'center',
           flexDirection: 'column',
           position: 'absolute',
-          top: '85%',
+          top: '75%',
           left: '50%',
           transform: 'translate(-50%, -50%)',
         }}>

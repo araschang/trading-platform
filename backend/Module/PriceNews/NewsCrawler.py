@@ -7,7 +7,7 @@ import platform
 import json
 import os
 
-def get_news():
+def getNewsData():
     options = Options()
 
     current_system = platform.system()

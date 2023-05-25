@@ -14,5 +14,6 @@ backend/test.py
 backend/my_module.py
 backend/venv/
 backend/todo
+backend/Module/example1.png
 backend/Module/ML_Sentimental/__pycache__/
 .DS_Store

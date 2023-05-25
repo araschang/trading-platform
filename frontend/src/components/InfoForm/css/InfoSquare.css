@@ -92,6 +92,23 @@ display: flex;
     color: #667AF5;
     font-weight: bold;
     font-size: 14px;
+    width:18em;
+    overflow:hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.news_url:visited{
+    color: #b8b8b8;
+}
+a:link{
+    color: #667AF5;
+}
+a:hover{
+    color: #909fff;
+}
+a:visited{
+    color: #b8b8b8;
+    font-weight: 700;
 }
 .news_top{
     font-size: 14px;

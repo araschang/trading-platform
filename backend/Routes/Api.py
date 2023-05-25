@@ -7,6 +7,9 @@ from Routes.MembershipController import MembershipController, MemberLoginControl
 from Routes.DataScienceController import SentimentalAnalysisController, PriceNewsCrawlController, WordCloudController
 from Module.Trade import Trade
 from Module.ML_Sentimental.SentimentalAnalysis import getSentimentScore
+from Module.ML_Sentimental.Crawler.TwitterAPI import getTwitterData
+from Module.PriceNews.NewsCrawler import getNewsData
+from Module.ML_Sentimental.CVIFolder.cvi_crawler import getCVIData
 from Base.Connector import MongoConnector
 import datetime
 
@@ -30,13 +33,30 @@ def job_trade():
         timeframe = tradeMember['timeframe']
         strategy = tradeMember['strategy']
 
-        trade = Trade(id, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy)
-        trade.Trade()
+        try:
+            trade = Trade(id, exchange, api_key, api_secret, pass_phrase, symbol, money, timeframe, strategy)
+            trade.Trade()
+        except Exception as e:
+            mongo = MongoConnector()
+            tradeMemberConnection = mongo.getTradeMemberConn()
+            tradeMemberConnection.update_one({'id': id}, {'$set': {'problem': '1'}})
     print('JOB "TRADE" DONE')
 
 def job_sentiment():
     getSentimentScore(datetime.date.today())
     print('JOB "SENTIMENT" DONE')
+
+def job_twitter():
+    getTwitterData()
+    print('JOB "TWITTER" DONE')
+
+def job_news():
+    getNewsData()
+    print('JOB "NEWS" DONE')
+
+def job_cvi():
+    getCVIData()
+    print('JOB "CVI" DONE')
 
 api.add_resource(
     BacktestController,
@@ -78,8 +98,11 @@ api.add_resource(
     '/wordcloud',
 )
 
-scheduler.add_job(job_trade, 'interval', seconds=30)
-scheduler.add_job(job_sentiment, 'interval', seconds=60)
+scheduler.add_job(job_trade, 'interval', seconds=60)
+scheduler.add_job(job_cvi, 'interval', minutes=60)
+scheduler.add_job(job_twitter, 'interval', minutes=60, next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=30))
+scheduler.add_job(job_news, 'interval', minutes=60 ,next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=60))
+scheduler.add_job(job_sentiment, 'interval', minutes=60 , next_run_time=datetime.datetime.now() + datetime.timedelta(seconds=90))
 scheduler.start()
 
 if __name__ == '__main__':

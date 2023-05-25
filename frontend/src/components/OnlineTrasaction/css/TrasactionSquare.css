@@ -1,6 +1,5 @@
 .Tra_square{
     width:800px;
-
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -16,14 +15,23 @@
     font-weight: bold;
     color:#667AF5;
 }
+.Tra_title_text_info_two{
+    padding:0 0 0 1.5rem;
+    font-weight: bold;
+    color:#667AF5;
+}
+.Tra_title_text_info_three{
+    padding:0 2rem 0 0;
+    font-weight: bold;
+    color:#667AF5;
+}
 .Tra_title_text_position{
-    width: 200px;
-    height: 150px;
-    background: #FFFFFF;
+    width: 150px;
+    height: 140px;
     border-radius: 8px;
     display: flex;
     justify-content: space-around;
-    align-items: flex-end;
+    align-items: flex-start;
     flex-direction: column;
 }
 .Tra_title_text_info_position{
@@ -56,8 +64,19 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+
 }
 .Tra_left_two{
+    width: 320px;
+    background-color: white;
+    border-radius: 8px;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+.Tra_left_three{
     width: 320px;
     background-color: white;
     border-radius: 8px;
@@ -70,7 +89,7 @@
     width: 350px;
     background-color: white;
     border-radius: 8px;
-    height: 152px;
+    height: 165px;
     display: flex;
     justify-content: space-around;
     align-items: flex-start;
@@ -86,10 +105,10 @@
 .Tra_right_one_account{
     display: flex;
     justify-content: space-around;
-    gap:1rem;
+    gap:0.5rem;
     align-items: flex-end;
     flex-direction: column;
-    padding-left: 10rem;
+    padding-left: 1rem;
 }
 .Tra_right_two{
     width: 350px;
@@ -159,4 +178,4 @@
 }
 
 .Tra_input_square.account{
-    width:130px;}
+    width:300px;}

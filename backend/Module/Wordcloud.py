@@ -13,7 +13,7 @@ def getWordCloud():
     path = os.path.join(os.path.dirname(__file__), 'ML_Sentimental/Crawler/twitter_data_new.csv')
     df = pd.read_csv(path)
 
-    stop_words = STOPWORDS.update(["https", "co", "RT", "reddit", "bitcoin", "WWW", "com", "message", "n"])
+    stop_words = STOPWORDS.update(["https", "co", "RT", "reddit", "bitcoin", "WWW", "com", "message", "n", "will", "price", "crypto", "BTC", "money", "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "amp", "cryptocurrency", "cryptocurrencies", "cryptocurrencies", "cryptocurrencies", "cryptocurrey"])
     # twitter
     wordcloud = WordCloud(stopwords = stop_words).generate(''.join([i for i in df['text']]))
 

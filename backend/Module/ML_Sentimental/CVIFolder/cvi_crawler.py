@@ -1,25 +1,33 @@
-def get_price():
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.options import Options
+import platform
+import os
+
+def getCVIData():
     '''
     This function would append the latest date and the latest price 
     to "./price_data.csv".
     '''
-    from selenium import webdriver
-    from selenium.webdriver.common.by import By
-    from selenium.webdriver.chrome.options import Options
-    import platform
-    import os
 
     options = Options()
-    # options = webdriver.ChromeOptions()
-    options.add_argument("--disable-notifications")
-    options.add_experimental_option("excludeSwitches", ["enable-automation"])
-    options.add_experimental_option("useAutomationExtension", False)
-
     current_system = platform.system()
     if current_system == 'Linux':
-        chrome_path = './chromedriver_linux64/chromedriver'
+        chrome_path = '/usr/lib/chromium-browser/chromedriver'
+        options.add_argument("disable-infobars")
+        options.add_argument("--disable-extensions")
+        options.add_argument("--remote-debugging-port=9222")
+        options.add_argument("--start-maximized")
+        options.add_argument("--disable-dev-shm-usage")
+        options.add_argument("--no-sandbox")
+        options.add_argument('--headless')
     elif current_system == 'Darwin':
         chrome_path = './chromedriver_mac_arm64/chromedriver'
+        options.add_argument("--disable-notifications")
+        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+        options.add_experimental_option("useAutomationExtension", False)
+        options.add_argument("user-agent=Mozilla/5.0")
+
     driver = webdriver.Chrome(chrome_path, chrome_options=options)
     path = "https://www.investing.com/indices/crypto-volatility-index-historical-data"
     driver.get(path)

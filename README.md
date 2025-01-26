@@ -1,6 +1,6 @@
 # A Quantitative Trading Platform for Non-Programmers
- 🎉 Winning 🥉The Third Place in the [Coding 101 Competition](https://sites.google.com/view/2023coding101/index?authuser=0) 🎉
- 🔗[Caslow's Project webpage link] (https://caslowchien.github.io/portfolio/project_AI_2_stock.html)
+ 🎉 Winning 🥉The Third Place in the [Coding 101 Competition](https://sites.google.com/view/2023coding101/index?authuser=0) 🎉\
+ 🔗[Linke to Caslow's project page](https://caslowchien.github.io/portfolio/project_AI_2_stock.html)🔗
 ## Project Introduction
 **Our goal: "Empowering Traders to Automate Their Strategies: A Modular Trading Platform for Non-Programmers"**
 
@@ -36,16 +36,16 @@ Our platform offers a user-friendly UI/UX interface, enabling traders to effortl
           <b>Caslow Chien</b>
         </a>
         <br />
-        💻 Developer
+        💻 Machine Learning Engineer
         <br />
         <a href="https://caslowchien.github.io/caslow.github.io/" target="_blank">
           <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Avatar_user_enterprise.png" width="20px;" alt="Website"/>
         </a> 
         <a href="https://www.linkedin.com/in/caslow/" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/LinkedIn_Logo_2013.svg" width="20px;" alt="LinkedIn"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
         </a>
         <a href="mailto:caslow@bu.edu" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Email_icon.svg" width="20px;" alt="Email"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
         </a>
       </td>
      <td align="center">
@@ -55,13 +55,13 @@ Our platform offers a user-friendly UI/UX interface, enabling traders to effortl
           <b>Aras Chang</b>
         </a>
         <br />
-        💻 Developer
+        💻 Back-End Developer
         <br />
         <a href="https://www.linkedin.com/in/araschang/" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/LinkedIn_Logo_2013.svg" width="20px;" alt="LinkedIn"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
         </a>
         <a href="mailto:arashappy@gmail.com" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Email_icon.svg" width="20px;" alt="Email"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
         </a>
       </td>
      <td align="center">
@@ -71,16 +71,16 @@ Our platform offers a user-friendly UI/UX interface, enabling traders to effortl
           <b>Jessie Chin</b>
         </a>
         <br />
-        💻 Developer
+        Front-End Developer
         <br />
         <a href="https://www.facebook.com/yuan0727" target="_blank">
           <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" width="20px;" alt="Facebook"/>
         </a> 
         <a href="https://www.linkedin.com/in/jessiechin727/" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/LinkedIn_Logo_2013.svg" width="20px;" alt="LinkedIn"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
         </a>
         <a href="mailto:yuan2001@live.com" target="_blank">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a6/Email_icon.svg" width="20px;" alt="Email"/>
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
         </a>
       </td>
     </tr>

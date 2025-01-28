@@ -1,6 +1,6 @@
 # A Quantitative Trading Platform for Non-Programmers
- 🎉 Winning 🥉The Third Place in the [Coding 101 Competition](https://sites.google.com/view/2023coding101/index?authuser=0) 🎉
-
+ 🎉 Winning 🥉The Third Place in the [Coding 101 Competition](https://sites.google.com/view/2023coding101/index?authuser=0) 🎉\
+ 🔗[Linke to Caslow's project page](https://caslowchien.github.io/portfolio/project_AI_2_stock.html)🔗
 ## Project Introduction
 **Our goal: "Empowering Traders to Automate Their Strategies: A Modular Trading Platform for Non-Programmers"**
 
@@ -23,3 +23,89 @@ Our platform offers a user-friendly UI/UX interface, enabling traders to effortl
 
 ## Demo
 ![](https://github.com/araschang0827/trading-platform/blob/main/src/Flow.jpg?raw=true)
+
+# Authors
+
+<div align="center">
+  <table>
+    <tr>
+     <td align="center">
+        <a href="https://github.com/araschang">
+          <img src="https://avatars.githubusercontent.com/u/110379941?v=4" width="100px;" alt="Aras Chang"/>
+          <br />
+          <b>Aras Chang</b>
+        </a>
+        <br />
+        Back-End Developer
+        <br />
+        <a href="https://www.linkedin.com/in/araschang/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
+        </a>
+        <a href="mailto:arashappy@gmail.com" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/CaslowChien">
+          <img src="https://avatars.githubusercontent.com/u/99608452?v=4" width="100px;" alt="Caslow Chien"/>
+          <br />
+          <b>Caslow Chien</b>
+        </a>
+        <br />
+        Machine Learning Engineer
+        <br />
+        <a href="https://caslowchien.github.io/caslow.github.io/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/f/f7/Avatar_user_enterprise.png" width="20px;" alt="Website"/>
+        </a> 
+        <a href="https://www.linkedin.com/in/caslow/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
+        </a>
+        <a href="mailto:caslow@bu.edu" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
+        </a>
+      </td>
+     <td align="center">
+        <a href="https://github.com/JessieChin7">
+          <img src="https://avatars.githubusercontent.com/u/96047516?v=4" width="100px;" alt="Jessie Chin"/>
+          <br />
+          <b>Jessie Chin</b>
+        </a>
+        <br />
+        Front-End Developer
+        <br />
+        <a href="https://www.facebook.com/yuan0727" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Facebook_icon.svg" width="20px;" alt="Facebook"/>
+        </a> 
+        <a href="https://www.linkedin.com/in/jessiechin727/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
+        </a>
+        <a href="mailto:yuan2001@live.com" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/tsaichiehhuang">
+          <img src="https://avatars.githubusercontent.com/u/112929952?v=4" width="100px;" alt="Tsai-Chieh Huang"/>
+          <br />
+          <b>Tsai-Chieh Huang</b>
+        </a>
+        <br />
+        Front-End Developer
+        <br />
+        <a href="https://www.linkedin.com/in/tsaichiehhuang0307/" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/81/LinkedIn_icon.svg/108px-LinkedIn_icon.svg.png" width="20px;" alt="LinkedIn"/>
+        </a>
+        <a href="mailto:a0970605512@gmail.com" target="_blank">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Email_icon.svg" width="20px;" alt="Email"/>
+        </a>
+      </td>
+      <td align="center">
+          <br />
+          <b>陳鵬仁</b>
+        <br />
+        Data Scraping Specialist 
+        </br>
+      </td>
+    </tr>
+  </table>
+</div>
